@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Chat App - Final UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --primary-dark: #0056b3; /* Darker Blue */
+            --secondary-color: #6c757d; /* Gray */
+            --accent-color: #17a2b8; /* Teal/Cyan Accent */
+            --light-bg: #ffffff;
+            --app-bg: #f4f7f6; /* Very light gray for overall background */
+            --dark-text: #333333; /* Darker gray for text */
+            --medium-text: #555555;
+            --light-text-on-dark: #ffffff; /* White text on dark backgrounds */
+            --border-color: #ced4da; /* Lighter border */
+            --input-bg: #ffffff;
+            --sent-bg: #dcf8c6;
+            --received-bg: #ffffff;
+            --chat-bg: #e5ddd5;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --placeholder-text: #6c757d;
+            --google-color: #DB4437;
+            --shadow-light: rgba(0, 0, 0, 0.05);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; width: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Modern Font Stack */
+            background-color: var(--app-bg);
+            display: flex; justify-content: center; align-items: center;
+            color: var(--dark-text); user-select: none;
+        }
+
+        #app-container {
+            width: 100%; height: 100%; max-width: 100%; max-height: 100%;
+            background-color: var(--light-bg); border-radius: 0; box-shadow: none;
+            overflow: hidden; display: flex; flex-direction: column; position: relative;
+        }
+
+        .view { display: none !important; flex-direction: column; height: 100%; width: 100%; background-color: var(--light-bg); flex-grow: 1; overflow: hidden; }
+        .view.active { display: flex !important; }
+
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: var(--light-text-on-dark); padding: 14px 15px; /* Increased padding */
+            display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0; box-shadow: 0 3px 6px var(--shadow-medium);
+            position: relative; z-index: 10;
+        }
+        .app-header h2 { font-size: 1.25em; font-weight: 500; margin: 0; text-align: center; flex-grow: 1; }
+        .header-icon { color: var(--light-text-on-dark); background: none; border: none; font-size: 1.35em; cursor: pointer; padding: 8px; line-height: 1; margin-left: 5px; /* Add some space between icons */ }
+        .header-icon:first-child { margin-left: 0; } /* No left margin for the very first icon */
+        .header-icon.back-button { font-size: 1.15em; margin-right: 10px; margin-left: 0; }
+        .app-header .placeholder-icon { visibility: hidden; }
+
+        /* Auth View Styles */
+        #auth-container { padding: 30px 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-grow: 1; background-color: var(--app-bg); }
+        .auth-forms-wrapper { width: 100%; max-width: 380px; margin: auto; padding: 30px 25px; background-color: var(--light-bg); border-radius: 12px; box-shadow: 0 5px 20px var(--shadow-medium); }
+        .auth-forms-wrapper h2 { font-size: 2.2em; font-weight: 700; color: var(--primary-color); margin-bottom: 30px; }
+        .auth-form { width: 100%; margin-bottom: 25px; padding: 0; border: none; background: none; box-shadow: none; }
+        .auth-form h3 { margin-top: 0; margin-bottom: 20px; color: var(--secondary-color); font-size: 1.1em; font-weight: 400; }
+        input[type="email"], input[type="password"], input[type="text"], input[type="search"] { width: 100%; padding: 15px; margin-bottom: 18px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1em; background-color: var(--input-bg); transition: border-color 0.3s, box-shadow 0.3s; color: var(--dark-text); }
+        input::placeholder { color: var(--placeholder-text); }
+        input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); outline: none; }
+
+        /* Auth Button Styles (Included popup copy button) */
+        .auth-forms-wrapper button, #save-profile-button, #copy-link-button /* Added copy button */ { width: 100%; padding: 15px; background-color: var(--primary-color); color: var(--light-text-on-dark) !important; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 12px; transition: all 0.3s ease; box-shadow: 0 2px 4px var(--shadow-light); }
+        .auth-forms-wrapper button:hover, #save-profile-button:hover, #copy-link-button:hover { background-color: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 8px var(--shadow-medium); }
+        .auth-forms-wrapper button:active, #save-profile-button:active, #copy-link-button:active { transform: translateY(0); box-shadow: 0 2px 4px var(--shadow-light); }
+        .auth-forms-wrapper button#google-signin-button { background-color: var(--google-color); }
+        .auth-forms-wrapper button#google-signin-button:hover { background-color: #c33d2e; }
+        #auth-status { margin-top: 20px; font-weight: 500; font-size: 0.95em; min-height: 1.3em; color: var(--dark-text); }
+        .status-error { color: var(--danger-color) !important; }
+        .status-info { color: var(--success-color) !important; }
+        .auth-forms-wrapper button.secondary { background-color: var(--secondary-color); }
+        .auth-forms-wrapper button.secondary:hover { background-color: #545b62; }
+        .auth-switch { margin-top: 30px; font-size: 0.95em; color: var(--medium-text); }
+        .auth-switch button { font-size: 1em; background: none; color: var(--accent-color) !important; padding: 0; margin: 0 0 0 5px; width: auto; text-decoration: none; font-weight: 500; border: none; cursor: pointer; }
+        .auth-switch button:hover { text-decoration: underline; }
+        .forgot-password-link { display: block; text-align: right; font-size: 0.9em; margin-top: -8px; margin-bottom: 20px; }
+        .forgot-password-link button { font-size: 1em; background: none; color: var(--secondary-color) !important; padding:0; width:auto; text-decoration:underline; font-weight: normal; margin:0;}
+
+        /* Chat List Styles */
+        #chat-list-container {} #chat-list-container .app-header h2 { flex-grow: 1; text-align: center; }
+        .header-icon-group { display: flex; align-items: center; }
+        #search-area { padding: 12px 15px; border-bottom: 1px solid var(--border-color); background-color: #f8f9fa; flex-shrink: 0; }
+        #user-search-input { margin-bottom: 0; width: 100%; padding: 12px 18px; border-radius: 25px; border:1px solid var(--border-color); font-size: 1em; }
+        #main-list-area { flex-grow: 1; overflow-y: auto; position: relative;} #chats-list { height: 100%; overflow-y: auto; }
+        #search-results-list { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.98); overflow-y: auto; z-index: 5; display: none; }
+        .list-item { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background-color 0.2s ease; background-color: var(--light-bg); }
+        .list-item:last-child { border-bottom: none; } .list-item:hover { background-color: #e9ecef; }
+        .list-item .avatar { font-size: 1.5em; margin-right: 15px; color: var(--light-text-on-dark); width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%); border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; font-weight: 500; }
+        .list-item-info { flex-grow: 1; overflow: hidden; } .list-item-info span { display: block; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .list-item-info .name { font-weight: 500; color: var(--dark-text); font-size: 1.1em; } .list-item-info .detail { font-size: 0.9em; color: var(--medium-text); } .list-placeholder { text-align: center; margin-top: 40px; color: var(--placeholder-text); font-size: 1.1em; padding: 20px; }
+
+        /* Chat View Styles */
+        #chat-container {} #messages-area { flex-grow: 1; overflow-y: auto; padding: 15px; background-color: var(--chat-bg); display: flex; flex-direction: column; } #messages-area::after { content: ''; display: block; height: 10px; } .message-wrapper { display: flex; margin-bottom: 5px; } .message-wrapper.sent { justify-content: flex-end; } .message-wrapper.received { justify-content: flex-start; } .message { display: flex; flex-direction: column; max-width: 80%; padding: 10px 15px; border-radius: 18px; word-wrap: break-word; box-shadow: 0 1px 2px var(--shadow-light); line-height: 1.45; position: relative; cursor: pointer; transition: transform 0.1s ease; } .message.pressed { transform: scale(0.98); background-color: rgba(0,0,0,0.05);} .message .text { font-size: 1em; margin-bottom: 3px; color: var(--dark-text) } .message .timestamp { font-size: 0.7em; color: #888; text-align: right; margin-top: auto; margin-left: 10px; } .sent .message { background-color: var(--sent-bg); border-bottom-right-radius: 8px; align-items: flex-end; } .received .message { background-color: var(--received-bg); border-bottom-left-radius: 8px; align-items: flex-start; }
+        #input-area { display: flex; padding: 10px 12px; border-top: 1px solid var(--border-color); background-color: #f8f9fa; align-items: center; flex-shrink: 0; }
+        #message-input { flex-grow: 1; margin-right: 10px; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border-color); font-size: 1em; background-color: var(--input-bg); }
+        #send-button { width: 48px; height: 48px; border-radius: 50%; font-size: 1.25em; background-color: var(--primary-color); padding: 0; display: flex; justify-content: center; align-items: center; flex-shrink: 0; color:white; border:none; transition: background-color 0.2s; }
+        #send-button:hover { background-color: var(--primary-dark); }
+
+        /* Profile Edit View Styles */
+        #profile-edit-container {} #profile-edit-container .profile-content { padding: 25px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; align-items: center; } .profile-form-group { margin-bottom: 20px; width:100%; max-width: 380px; } .profile-form label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--secondary-color); text-align: left; } .profile-form input { width:100%; padding: 14px; }
+        .profile-info { margin-bottom: 30px; padding: 20px; background-color: #e9ecef; border-radius: 8px; text-align: left; width:100%; max-width: 380px; } .profile-info p { margin: 8px 0; font-size: 1em; word-wrap: break-word; } .profile-info strong { color: var(--dark-text); margin-right: 5px; } .profile-info .public-id-display { font-family: 'Courier New', Courier, monospace; background-color: #dcdcdc; padding: 3px 6px; border-radius: 4px; display: inline-block; } #profile-status { margin-top: 20px; font-weight: 500; text-align: center; width:100%; max-width: 380px;}
+
+        /* Message Context Menu Styles */
+        #message-context-menu { position: absolute; display: none; background-color: var(--light-bg); border-radius: 8px; box-shadow: 0 4px 12px var(--shadow-medium); padding: 8px 0; z-index: 100; min-width: 200px; } #message-context-menu button { display: flex; align-items: center; width: 100%; background: none; border: none; color: var(--dark-text); padding: 12px 18px; text-align: left; font-size: 1em; cursor: pointer; margin: 0; border-radius: 0; } #message-context-menu button:hover { background-color: #f1f1f1; } #message-context-menu button i { margin-right: 12px; width: 20px; text-align: center; color: var(--secondary-color); } #message-context-menu button.delete-everyone { color: var(--danger-color); } #message-context-menu button.delete-everyone i { color: var(--danger-color); } .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99; display: none; }
+
+        /* Loader Styles */
+        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(255,255,255,0.7); display:none; justify-content:center; align-items:center; z-index: 1000; } .loader { border: 6px solid #f3f3f3; border-top: 6px solid var(--primary-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- NEW: Share Popup Styles --- */
+        .popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+            display: none; /* Hidden by default */
+            justify-content: center; align-items: center;
+            z-index: 1100; /* Above other elements */
+            padding: 15px; /* Add padding for smaller screens */
+            opacity: 0; /* Start hidden for transition */
+            transition: opacity 0.3s ease;
+        }
+        .popup-overlay.visible {
+            display: flex;
+            opacity: 1;
+        }
+        .popup-modal {
+            background-color: var(--light-bg);
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); /* Enhanced shadow */
+            width: 100%; /* Full width within padding */
+            max-width: 400px;
+            display: flex; flex-direction: column;
+            position: relative; /* For close button positioning */
+            text-align: center;
+            transform: scale(0.95); /* Start slightly smaller for transition */
+            transition: transform 0.3s ease;
+        }
+        .popup-overlay.visible .popup-modal {
+            transform: scale(1);
+        }
+        .popup-modal h3 {
+            color: var(--primary-color);
+            font-size: 1.4em; /* Adjusted size */
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .popup-modal .link-display {
+            width: 100%; padding: 12px 15px; margin-bottom: 20px;
+            border: 1px solid var(--border-color); border-radius: 8px;
+            font-size: 0.9em; /* Slightly smaller */
+            background-color: #e9ecef; /* Light gray background */
+            color: var(--dark-text);
+            text-align: left;
+            font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace; /* Better monospace font stack */
+            word-break: break-all; /* Ensure long links break */
+            -webkit-user-select: text; /* Allow selecting text */
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text; /* Standard property */
+            line-height: 1.5;
+        }
+        .popup-modal #copy-link-button {
+            margin-top: 0; /* Remove top margin, rely on link display margin */
+            font-size: 1em; /* Slightly smaller button */
+            padding: 12px;
+        }
+         .popup-modal #copy-link-button i { /* Style for icon inside button */
+            margin-right: 8px;
+        }
+        .popup-modal .close-button {
+            position: absolute; top: 8px; right: 8px; /* Adjusted position */
+            background: none; border: none;
+            font-size: 1.7em; /* Adjusted size */
+            color: var(--secondary-color);
+            line-height: 1; cursor: pointer; padding: 5px;
+        }
+         .popup-modal .close-button:hover {
+            color: var(--dark-text);
+         }
+         .popup-copy-status { /* For displaying "Copied!" message */
+            font-size: 0.9em;
+            color: var(--success-color);
+            margin-top: 10px;
+            height: 1.2em; /* Reserve space */
+            font-weight: 500;
+         }
+
+    </style>
+</head>
+<body>
+    <div id="app-container">
+
+        <!-- Auth View (No Changes) -->
+        <div id="auth-container" class="view active"> <div class="auth-forms-wrapper"></div> </div>
+
+        <!-- Chat List View (Header Modified) -->
+        <div id="chat-list-container" class="view">
+            <div class="app-header">
+                <button id="profile-button" class="header-icon"><i class="fas fa-user-circle"></i></button>
+                <h2>Chats</h2>
+                <div class="header-icon-group">
+                    <button id="share-app-button" class="header-icon" title="Share App"><i class="fas fa-share-alt"></i></button>
+                    <button id="logout-button-list" class="header-icon"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+            <div id="search-area"> <input type="search" id="user-search-input" placeholder="Search users to start chat..."> </div>
+            <div id="main-list-area"> <div id="chats-list"> <p class="list-placeholder">No active chats. Search for users to start chatting.</p> </div> <div id="search-results-list"> <p class="list-placeholder">Type to search users...</p> </div> </div>
+        </div>
+
+        <!-- Chat View (No Changes) -->
+        <div id="chat-container" class="view"> <div class="app-header"> <button id="back-to-list-button" class="header-icon back-button"><i class="fas fa-arrow-left"></i></button> <h2 id="chat-with-user">Chat</h2> <span class="header-icon placeholder-icon" style="padding: 8px;"><i class="fas fa-arrow-left"></i></span> </div> <div id="messages-area"></div> <div id="input-area"> <input type="text" id="message-input" placeholder="Type a message..."> <button id="send-button"><i class="fas fa-paper-plane"></i></button> </div> </div>
+
+        <!-- Profile Edit View (No Changes) -->
+        <div id="profile-edit-container" class="view"> <div class="app-header"> <button id="back-to-list-from-profile-button" class="header-icon back-button"><i class="fas fa-arrow-left"></i></button> <h2>My Profile</h2> <button id="logout-button-profile" class="header-icon"><i class="fas fa-sign-out-alt"></i></button> </div> <div class="profile-content"> <div class="profile-info"> <p><strong>Email:</strong> <span id="profile-email"></span></p> <p style="font-size: 0.8em; color: var(--secondary-color)">Internal UID: <span id="profile-uid"></span></p> </div> <div class="profile-form"> <div class="profile-form-group"> <label for="profile-display-name">Display Name:</label> <input type="text" id="profile-display-name" placeholder="Enter your display name"> </div> <div class="profile-form-group"> <label for="profile-public-id-input">Public UserID:</label> <input type="text" id="profile-public-id-input" placeholder="e.g., username123"> <small style="font-size:0.8em; color: var(--secondary-color); display:block; margin-top: 5px;">Letters, numbers, min 5 chars. Unique.</small> </div> <button id="save-profile-button">Save Changes</button> <div id="profile-status"></div> </div> </div> </div>
+
+        <!-- Context Menu, Overlay, Loader (No Changes) -->
+        <div id="message-context-menu"></div> <div id="menu-overlay" class="menu-overlay"></div>
+        <div id="loader-overlay" class="loader-overlay"><div class="loader"></div></div>
+
+
+        <!-- *** NEW: Share Popup HTML *** -->
+        <div id="share-popup-overlay" class="popup-overlay">
+            <div id="share-popup-modal" class="popup-modal">
+                <button id="close-share-popup-button" class="close-button" aria-label="Close">×</button>
+                <h3>Share App Link</h3>
+                <div id="share-link-display" class="link-display" aria-readonly="true"></div>
+                <button id="copy-link-button"><i class="fas fa-copy"></i> Copy Link</button>
+                <div id="copy-status-message" class="popup-copy-status"></div> <!-- For feedback -->
+            </div>
+        </div>
+        <!-- *** END: Share Popup HTML *** -->
+
+    </div><!-- End #app-container -->
+
+
+    <script type="module">
+        // Firebase Imports (Same as before)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getDatabase, ref as dbRef, onValue, push, serverTimestamp, set, update, query, orderByChild, equalTo, get, off, remove } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+
+        // Firebase Config (Same as before)
+        const firebaseConfig = { /* --- PASTE YOUR CONFIG HERE --- */ apiKey: "AIzaSyCFihnVTG6qLoREqmwIo1dPTVazUX6S_ec", authDomain: "chatting-app-5b3fb.firebaseapp.com", databaseURL: "https://chatting-app-5b3fb-default-rtdb.firebaseio.com", projectId: "chatting-app-5b3fb", storageBucket: "chatting-app-5b3fb.appspot.com", messagingSenderId: "44665165613", appId: "1:44665165613:web:cb978ce54b4216c776e5a4", measurementId: "G-TKFLVWKZ6H" };
+
+        // Initialize Firebase (Same as before)
+        const app = initializeApp(firebaseConfig); const database = getDatabase(app); const auth = getAuth(app); const googleProvider = new GoogleAuthProvider();
+
+        // --- DOM Element References (Added Share Popup Elements) ---
+        const views = document.querySelectorAll('.view');
+        const authContainer = document.getElementById('auth-container');
+        const authFormsWrapper = authContainer.querySelector('.auth-forms-wrapper');
+        const profileButton = document.getElementById('profile-button');
+        const logoutButtonList = document.getElementById('logout-button-list');
+        const logoutButtonProfile = document.getElementById('logout-button-profile');
+        const shareAppButton = document.getElementById('share-app-button'); // Share trigger button
+        const userSearchInput = document.getElementById('user-search-input');
+        const chatsListDiv = document.getElementById('chats-list');
+        const searchResultsListDiv = document.getElementById('search-results-list');
+        const backToListButton = document.getElementById('back-to-list-button');
+        const chatWithUserTitle = document.getElementById('chat-with-user');
+        const messagesArea = document.getElementById('messages-area');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const backToListFromProfileButton = document.getElementById('back-to-list-from-profile-button');
+        const profileEmail = document.getElementById('profile-email');
+        const profileUid = document.getElementById('profile-uid');
+        const profileDisplayNameInput = document.getElementById('profile-display-name');
+        const profilePublicIdInput = document.getElementById('profile-public-id-input');
+        const saveProfileButton = document.getElementById('save-profile-button');
+        const profileStatus = document.getElementById('profile-status');
+        const messageContextMenu = document.getElementById('message-context-menu');
+        const menuOverlay = document.getElementById('menu-overlay'); // For context menu
+        const loaderOverlay = document.getElementById('loader-overlay');
+
+        // *** NEW: Share Popup Element References ***
+        const sharePopupOverlay = document.getElementById('share-popup-overlay');
+        const sharePopupModal = document.getElementById('share-popup-modal');
+        const shareLinkDisplay = document.getElementById('share-link-display');
+        const copyLinkButton = document.getElementById('copy-link-button');
+        const closeSharePopupButton = document.getElementById('close-share-popup-button');
+        const copyStatusMessage = document.getElementById('copy-status-message');
+        let copyTimeout = null; // To manage the "Copied!" message timeout
+
+
+        // --- State Variables (Same as before) ---
+        let currentUser = null; let currentChatId = null; let currentChatPartner = null; let messageListenerUnsubscribe = null; let myChatsListenerUnsubscribe = null; let allUsersCache = {}; let authMode = 'login'; let searchDebounceTimer = null; let longPressTimer = null; let longPressTargetInfo = null; const LONG_PRESS_DURATION = 500;
+
+        // --- Utility Functions (showLoader, hideLoader, showView - Same as before) ---
+        function showLoader() { loaderOverlay.style.display = 'flex'; }
+        function hideLoader() { loaderOverlay.style.display = 'none'; }
+        function showView(viewId) { console.log(`--- Request to show view: ${viewId} ---`); const targetView = document.getElementById(viewId); if (!targetView) { console.error(`Target view with ID '${viewId}' not found!`); return; } views.forEach(view => { if (view.classList.contains('active')) { console.log(`Deactivating view: ${view.id}`); view.classList.remove('active'); } }); console.log(`Activating view: ${targetView.id}`); targetView.classList.add('active'); console.log(`--- View switch complete for: ${viewId} ---`); }
+
+        // --- Auth UI Functions (renderAuthUI, addAuthEventListeners, setAuthStatus - Same as before) ---
+        function renderAuthUI() { /* ... (same as before) ... */ if (!authFormsWrapper) { console.error("Auth forms wrapper not found!"); return; } let html = ''; if (authMode === 'login') { html = `<h2 style="color: var(--dark-text);">Login</h2><div class="auth-form"> <input type="email" id="email-input" placeholder="Email" required> <input type="password" id="password-input" placeholder="Password" required> <p class="forgot-password-link"><button type="button" id="forgot-password-button">Forgot Password?</button></p> <button id="signin-button">Sign In</button> <div id="auth-status"></div> <p class="auth-switch">Don't have an account? <button type="button" id="switch-to-signup">Sign Up</button></p> </div><div class="auth-form"> <h3 style="color: var(--secondary-color);">Or</h3> <button id="google-signin-button"><i class="fab fa-google"></i> Sign In with Google</button> </div>`; } else { html = `<h2 style="color: var(--dark-text);">Sign Up</h2><div class="auth-form"> <input type="email" id="email-input" placeholder="Email" required> <input type="password" id="password-input" placeholder="Password (min. 6 characters)" required> <input type="text" id="display-name-input" placeholder="Your Name (e.g., John Doe)"> <button id="signup-button">Sign Up</button> <div id="auth-status"></div> <p class="auth-switch">Already have an account? <button type="button" id="switch-to-login">Log In</button></p> </div>`; } authFormsWrapper.innerHTML = html; addAuthEventListeners(); }
+        function addAuthEventListeners() { /* ... (same as before) ... */ const emailInput = authFormsWrapper.querySelector('#email-input'); const passwordInput = authFormsWrapper.querySelector('#password-input'); if (authMode === 'login') { authFormsWrapper.querySelector('#signin-button')?.addEventListener('click', handleSignIn); authFormsWrapper.querySelector('#google-signin-button')?.addEventListener('click', handleGoogleSignIn); authFormsWrapper.querySelector('#switch-to-signup')?.addEventListener('click', () => { authMode = 'signup'; renderAuthUI(); }); authFormsWrapper.querySelector('#forgot-password-button')?.addEventListener('click', handleForgotPassword); } else { authFormsWrapper.querySelector('#signup-button')?.addEventListener('click', handleSignUp); authFormsWrapper.querySelector('#switch-to-login')?.addEventListener('click', () => { authMode = 'login'; renderAuthUI(); }); } emailInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') passwordInput?.focus(); }); passwordInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { if (authMode === 'login') authFormsWrapper.querySelector('#signin-button')?.click(); else authFormsWrapper.querySelector('#signup-button')?.click(); } }); authFormsWrapper.querySelector('#display-name-input')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { authFormsWrapper.querySelector('#signup-button')?.click(); } }); }
+        function setAuthStatus(message, isError = false) { /* ... (same as before) ... */ const authStatusEl = authFormsWrapper?.querySelector('#auth-status'); if (authStatusEl) { authStatusEl.textContent = message; authStatusEl.className = isError ? 'status-error' : 'status-info'; } }
+
+        // --- Auth Actions (handleForgotPassword, onAuthStateChanged, etc. - Same as before) ---
+        async function handleForgotPassword() { /* ... (same as before) ... */ const emailInput = authFormsWrapper.querySelector('#email-input'); if (!emailInput) { alert("Email field not found."); return; } const email = emailInput.value.trim(); if (!email) { setAuthStatus("Please enter your email address to reset password.", true); emailInput.focus(); return; } setAuthStatus("Sending password reset email...", false); showLoader(); try { await sendPasswordResetEmail(auth, email); hideLoader(); setAuthStatus("Password reset email sent! Check your inbox.", false); } catch (error) { hideLoader(); console.error("Forgot password error:", error); setAuthStatus(`Error: ${error.message}`, true); } }
+        onAuthStateChanged(auth, (user) => { /* ... (same as before) ... */ setAuthStatus(''); detachMyChatsListener(); detachMessageListener(); if (user) { console.log("onAuthStateChanged: User is LOGGED IN", user.uid); const userRef = dbRef(database, 'users/' + user.uid); get(userRef).then(snapshot => { if (snapshot.exists()) { currentUser = snapshot.val(); console.log("User profile fetched:", currentUser); ensurePublicIdExistsAndUpdateIfNeeded(currentUser).then(() => { attachMyChatsListener(); showView('chat-list-container'); }); } else { console.warn("User authenticated but profile data not found in DB. Attempting to create."); const initialDisplayName = user.displayName || user.email.split('@')[0]; const fallbackUser = { uid: user.uid, email: user.email, displayName: initialDisplayName }; ensureUserProfileExists(user, fallbackUser, true); } }).catch(error => { console.error("Error fetching user profile data:", error); setAuthStatus("Could not load user profile. Please try again.", true); handleSignOut(); }); } else { console.log("onAuthStateChanged: User is LOGGED OUT"); currentUser = null; allUsersCache = {}; authMode = 'login'; renderAuthUI(); showView('auth-container'); } });
+        function generateBasePublicID(nameOrEmail) { /* ... (same as before) ... */ const base = nameOrEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase().substring(0, 10) || 'user'; const randomDigits = Math.floor(1000 + Math.random() * 9000); return `${base}${randomDigits}`; }
+        async function ensurePublicIdExistsAndUpdateIfNeeded(userData) { /* ... (same as before) ... */ if (!userData || !userData.uid) { console.error("Cannot ensure public ID: Invalid user data provided."); return; } const needsPublicId = !userData.publicUserID || userData.publicUserID.trim() === ''; if (needsPublicId) { console.log(`PublicUserID missing or empty for ${userData.uid}. Generating...`); const publicUserID = generateBasePublicID(userData.displayName || userData.email); const userRef = dbRef(database, 'users/' + userData.uid); try { await update(userRef, { publicUserID: publicUserID }); console.log(`Successfully added publicUserID '${publicUserID}' for ${userData.uid}`); if (currentUser && currentUser.uid === userData.uid) { currentUser.publicUserID = publicUserID; } } catch (error) { console.error(`Failed to update publicUserID for ${userData.uid}:`, error); } } else { console.log(`PublicUserID already exists for ${userData.uid}: ${userData.publicUserID}`); } }
+        async function ensureUserProfileExists(authUser, userDataFromDb = null, forceCreate = false) { /* ... (same as before) ... */ const userRef = dbRef(database, 'users/' + authUser.uid); try { const snapshot = userDataFromDb ? { exists: () => true, val: () => userDataFromDb } : await get(userRef); if (!snapshot.exists() || forceCreate) { console.log(`Creating profile for ${authUser.uid}`); const signupDisplayName = authFormsWrapper?.querySelector('#display-name-input')?.value.trim(); const initialDisplayName = signupDisplayName || authUser.displayName || authUser.email.split('@')[0]; const publicUserID = generateBasePublicID(initialDisplayName || authUser.email); const newUserProfile = { uid: authUser.uid, email: authUser.email, displayName: initialDisplayName, publicUserID: publicUserID, createdAt: serverTimestamp() }; await set(userRef, newUserProfile); console.log("User profile CREATED in DB:", newUserProfile); if (authUser.displayName !== initialDisplayName && auth.currentUser) { try { await updateProfile(auth.currentUser, { displayName: initialDisplayName }); } catch (err) { console.warn("Could not update Auth profile display name:", err); } } if (!currentUser || forceCreate) { currentUser = newUserProfile; attachMyChatsListener(); showView('chat-list-container'); } } else { const dbData = snapshot.val(); if (!currentUser || currentUser.uid !== dbData.uid) currentUser = dbData; if (authUser.displayName && dbData.displayName !== authUser.displayName) { console.log("Updating DB display name from Auth provider..."); await update(userRef, { displayName: authUser.displayName }); if(currentUser) currentUser.displayName = authUser.displayName; } await ensurePublicIdExistsAndUpdateIfNeeded(dbData); } } catch (error) { console.error("Error ensuring user profile exists:", error); setAuthStatus("Failed to initialize user profile.", true); } }
+        function handleSignUp() { /* ... (same as before) ... */ const emailInput = authFormsWrapper?.querySelector('#email-input'); const passwordInput = authFormsWrapper?.querySelector('#password-input'); if (!emailInput || !passwordInput) return; const email = emailInput.value; const password = passwordInput.value; setAuthStatus(''); if (!email || !password) { setAuthStatus('Please enter email and password.', true); return; } if (password.length < 6) { setAuthStatus('Password must be at least 6 characters long.', true); return; } setAuthStatus('Signing up...'); createUserWithEmailAndPassword(auth, email, password).then(() => { console.log("Sign up successful via email"); setAuthStatus('Account created! Setting up profile...', false); }).catch((error) => { console.error("Sign up error:", error); if (error.code === 'auth/email-already-in-use') { setAuthStatus('This email is already registered. Please Log In.', true); authMode = 'login'; renderAuthUI(); authFormsWrapper.querySelector('#email-input').value = email; } else { setAuthStatus(`Sign up failed: ${error.message}`, true); } }); }
+        function handleSignIn() { /* ... (same as before) ... */ const emailInput = authFormsWrapper?.querySelector('#email-input'); const passwordInput = authFormsWrapper?.querySelector('#password-input'); if (!emailInput || !passwordInput) return; const email = emailInput.value; const password = passwordInput.value; setAuthStatus(''); if (!email || !password) { setAuthStatus('Please enter email and password.', true); return; } setAuthStatus('Logging in...'); signInWithEmailAndPassword(auth, email, password).then(() => { console.log("Sign in successful via email"); }).catch((error) => { console.error("Sign in error:", error); if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') { setAuthStatus('Invalid email or password.', true); } else { setAuthStatus(`Sign in failed: ${error.message}`, true); } }); }
+        function handleGoogleSignIn() { /* ... (same as before) ... */ setAuthStatus('Connecting to Google...'); signInWithPopup(auth, googleProvider).then(() => { console.log("Google Sign in successful"); }).catch((error) => { console.error("Google Sign in error:", error); if (error.code === 'auth/popup-closed-by-user') { setAuthStatus('Google Sign in cancelled.', false); } else if (error.code === 'auth/network-request-failed') { setAuthStatus('Network error. Please check connection.', true); } else { setAuthStatus(`Google Sign in failed: ${error.message}`, true); } }); }
+        const handleSignOut = () => { /* ... (same as before) ... */ console.log("Signing out..."); detachMyChatsListener(); detachMessageListener(); hideContextMenu(); hideSharePopup(); /* Hide share popup on logout too */ signOut(auth).catch((error) => { alert(`Sign out failed: ${error.message}`); }); };
+
+        // --- Event Listeners for Logout (Same as before) ---
+        logoutButtonList.addEventListener('click', handleSignOut);
+        logoutButtonProfile.addEventListener('click', handleSignOut);
+
+        // --- Chat List Functions (attachMyChatsListener, etc. - Same as before) ---
+        function attachMyChatsListener() { /* ... (same as before) ... */ if (!currentUser) return; detachMyChatsListener(); const myChatsRef = dbRef(database, `users/${currentUser.uid}/chats`); const chatsQuery = query(myChatsRef, orderByChild('lastTimestamp')); console.log(`Attaching listener to my chats: users/${currentUser.uid}/chats`); myChatsListenerUnsubscribe = onValue(chatsQuery, (snapshot) => { const chatsData = []; if (snapshot.exists()) { snapshot.forEach(childSnapshot => { chatsData.push({ chatId: childSnapshot.key, ...childSnapshot.val() }); }); chatsData.sort((a, b) => b.lastTimestamp - a.lastTimestamp); } renderChatList(chatsData); }, (error) => { console.error("Error fetching my chats:", error); chatsListDiv.innerHTML = '<p class="list-placeholder" style="color:red;">Could not load chats.</p>'; }); }
+        function detachMyChatsListener() { /* ... (same as before) ... */ if (myChatsListenerUnsubscribe && currentUser) { const myChatsRef = dbRef(database, `users/${currentUser.uid}/chats`); off(myChatsRef, 'value', myChatsListenerUnsubscribe); myChatsListenerUnsubscribe = null; console.log("Detached my chats listener."); } }
+        function renderChatList(chats) { /* ... (same as before) ... */ chatsListDiv.innerHTML = ''; if (chats.length === 0) { chatsListDiv.innerHTML = '<p class="list-placeholder">No active chats. Search for users to start chatting.</p>'; return; } chats.forEach(chatData => { const partnerUid = chatData.partnerUid; if (!partnerUid) return; const cachedPartner = allUsersCache[partnerUid]; if (cachedPartner) { renderSingleChatListItem(cachedPartner, chatData); } else { const partnerRef = dbRef(database, `users/${partnerUid}`); get(partnerRef).then(partnerSnapshot => { if (partnerSnapshot.exists()) { const partnerData = partnerSnapshot.val(); allUsersCache[partnerUid] = partnerData; renderSingleChatListItem(partnerData, chatData); } }); } }); }
+        function renderSingleChatListItem(partnerData, chatData) { /* ... (same as before) ... */ if (!partnerData) return; const chatItem = document.createElement('div'); chatItem.classList.add('list-item'); const avatarDiv = document.createElement('div'); avatarDiv.classList.add('avatar'); const initial = partnerData.displayName ? partnerData.displayName.charAt(0).toUpperCase() : '?'; avatarDiv.textContent = initial; const itemInfoDiv = document.createElement('div'); itemInfoDiv.classList.add('list-item-info'); const nameSpan = document.createElement('span'); nameSpan.classList.add('name'); nameSpan.textContent = partnerData.displayName || 'No Name Set'; const detailSpan = document.createElement('span'); detailSpan.classList.add('detail'); detailSpan.textContent = `Chat started...`; itemInfoDiv.appendChild(nameSpan); itemInfoDiv.appendChild(detailSpan); chatItem.appendChild(avatarDiv); chatItem.appendChild(itemInfoDiv); chatItem.addEventListener('click', () => startChat(partnerData)); chatsListDiv.appendChild(chatItem); }
+
+        // --- User Search Functions (Same as before) ---
+        userSearchInput.addEventListener('input', (e) => { /* ... (same as before) ... */ const searchTerm = e.target.value.trim().toLowerCase(); clearTimeout(searchDebounceTimer); if (!searchTerm) { searchResultsListDiv.style.display = 'none'; searchResultsListDiv.innerHTML = '<p class="list-placeholder">Type to search users...</p>'; return; } searchResultsListDiv.style.display = 'block'; searchResultsListDiv.innerHTML = '<p class="list-placeholder">Searching...</p>'; searchDebounceTimer = setTimeout(() => { console.log("Debounced search for:", searchTerm); searchUsers(searchTerm); }, 300); });
+        async function searchUsers(searchTerm) { /* ... (same as before) ... */ if (!searchTerm) return; const usersRef = dbRef(database, 'users'); try { const snapshot = await get(usersRef); const results = []; if (snapshot.exists()) { snapshot.forEach(childSnapshot => { const user = childSnapshot.val(); if (user.uid !== currentUser?.uid && ((user.displayName && user.displayName.toLowerCase().includes(searchTerm)) || (user.publicUserID && user.publicUserID.toLowerCase().includes(searchTerm)))) { results.push(user); allUsersCache[user.uid] = user; } }); } renderSearchResults(results); } catch (error) { console.error("Error searching users:", error); searchResultsListDiv.innerHTML = '<p class="list-placeholder" style="color:red;">Error searching users.</p>'; } }
+        function renderSearchResults(results) { /* ... (same as before) ... */ searchResultsListDiv.innerHTML = ''; if (results.length === 0) { searchResultsListDiv.innerHTML = '<p class="list-placeholder">No users found matching your search.</p>'; return; } results.forEach(user => { const userItem = document.createElement('div'); userItem.classList.add('list-item'); const avatarDiv = document.createElement('div'); avatarDiv.classList.add('avatar'); const initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : '?'; avatarDiv.textContent = initial; const itemInfoDiv = document.createElement('div'); itemInfoDiv.classList.add('list-item-info'); const nameSpan = document.createElement('span'); nameSpan.classList.add('name'); nameSpan.textContent = user.displayName || 'No Name Set'; const detailSpan = document.createElement('span'); detailSpan.classList.add('detail'); detailSpan.textContent = `@${user.publicUserID || 'no_id'}`; itemInfoDiv.appendChild(nameSpan); itemInfoDiv.appendChild(detailSpan); userItem.appendChild(avatarDiv); userItem.appendChild(itemInfoDiv); userItem.addEventListener('click', () => { startChat(user); userSearchInput.value = ''; searchResultsListDiv.style.display = 'none'; searchResultsListDiv.innerHTML = ''; }); searchResultsListDiv.appendChild(userItem); }); }
+
+        // --- Chat Functions (generateChatId, startChat, attachMessageListener, etc. - Same as before) ---
+        function generateChatId(uid1, uid2) { /* ... (same as before) ... */ return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`; }
+        async function startChat(partnerData) { /* ... (same as before) ... */ if (!currentUser || !partnerData || !partnerData.uid) { console.error("Cannot start chat: Invalid user data provided for partner.", currentUser, partnerData); return; } currentChatPartner = partnerData; detachMessageListener(); currentChatId = generateChatId(currentUser.uid, partnerData.uid); console.log(`Starting chat with ${partnerData.displayName} (UID: ${partnerData.uid}), Chat ID: ${currentChatId}`); chatWithUserTitle.textContent = `${partnerData.displayName || partnerData.publicUserID}`; messagesArea.innerHTML = ''; messageInput.value = ''; const timestamp = serverTimestamp(); const chatMetaData = { partnerUid: partnerData.uid, partnerName: partnerData.displayName || '', lastTimestamp: timestamp }; const partnerChatMetaData = { partnerUid: currentUser.uid, partnerName: currentUser.displayName || '', lastTimestamp: timestamp }; const myChatEntryRef = dbRef(database, `users/${currentUser.uid}/chats/${currentChatId}`); const partnerChatEntryRef = dbRef(database, `users/${partnerData.uid}/chats/${currentChatId}`); try { await set(myChatEntryRef, chatMetaData); await set(partnerChatEntryRef, partnerChatMetaData); console.log("Chat metadata created/updated."); } catch (error) { console.error("Error creating/updating chat metadata:", error); } const messagesRef = dbRef(database, `chats/${currentChatId}/messages`); attachMessageListener(messagesRef); showView('chat-container'); }
+        function attachMessageListener(messagesRef) { /* ... (same as before) ... */ const messagesQuery = query(messagesRef, orderByChild('timestamp')); messageListenerUnsubscribe = onValue(messagesQuery, (snapshot) => { messagesArea.innerHTML = ''; let messageCount = 0; if (snapshot.exists()) { snapshot.forEach(childSnapshot => { const msgData = childSnapshot.val(); const msgId = childSnapshot.key; displayMessage(msgData, msgId); messageCount++; }); messagesArea.scrollTop = messagesArea.scrollHeight; } if (messageCount === 0) { messagesArea.innerHTML = '<p style="text-align:center; color:var(--placeholder-text); margin-top: 20px;">No messages yet. Say hi!</p>'; } }, (error) => { console.error("Error loading messages:", error); messagesArea.innerHTML = '<p style="text-align:center; color:red;">Could not load messages.</p>'; }); }
+        function detachMessageListener() { /* ... (same as before) ... */ if (messageListenerUnsubscribe && currentChatId) { const messagesRef = dbRef(database, `chats/${currentChatId}/messages`); off(messagesRef, 'value', messageListenerUnsubscribe); messageListenerUnsubscribe = null; console.log(`Detached message listener for chat: ${currentChatId}`); currentChatId = null; currentChatPartner = null; } else if (messageListenerUnsubscribe) { console.warn("Attempted to detach listener, but currentChatId was null."); messageListenerUnsubscribe = null; } }
+        function displayMessage(msgData, msgId) { /* ... (same as before) ... */ if (!currentUser || !msgData || !msgData.senderUid || !msgId) return; if (msgData.deletedFor && msgData.deletedFor[currentUser.uid]) { console.log(`Message ${msgId} is deleted for me. Skipping render.`); return; } const messageWrapper = document.createElement('div'); messageWrapper.classList.add('message-wrapper'); const messageDiv = document.createElement('div'); messageDiv.classList.add('message'); messageDiv.dataset.messageId = msgId; messageDiv.dataset.senderUid = msgData.senderUid; messageDiv.addEventListener('mousedown', handlePressStart); messageDiv.addEventListener('touchstart', handlePressStart, { passive: false }); messageDiv.addEventListener('mouseup', handlePressEnd); messageDiv.addEventListener('mouseleave', handlePressEnd); messageDiv.addEventListener('touchend', handlePressEnd); messageDiv.addEventListener('touchcancel', handlePressEnd); if (msgData.text) { const textSpan = document.createElement('span'); textSpan.classList.add('text'); textSpan.textContent = msgData.text; messageDiv.appendChild(textSpan); } const timeSpan = document.createElement('span'); timeSpan.classList.add('timestamp'); timeSpan.textContent = (msgData.timestamp && typeof msgData.timestamp === 'number') ? new Date(msgData.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'; if (msgData.senderUid === currentUser.uid) { messageWrapper.classList.add('sent'); } else { messageWrapper.classList.add('received'); } messageDiv.appendChild(timeSpan); messageWrapper.appendChild(messageDiv); messagesArea.appendChild(messageWrapper); messagesArea.scrollTop = messagesArea.scrollHeight; }
+
+        // --- Message Context Menu Functions (handlePressStart, etc. - Same as before) ---
+        function handlePressStart(e) { /* ... (same as before) ... */ const targetMessage = e.currentTarget; if (!targetMessage || !targetMessage.classList.contains('message')) return; if (e.type === 'touchstart' || (e.type === 'mousedown' && e.button === 2) ) { e.preventDefault(); } clearTimeout(longPressTimer); hideContextMenu(); const messageId = targetMessage.dataset.messageId; const senderUid = targetMessage.dataset.senderUid; if (!messageId || !senderUid) return; longPressTargetInfo = { element: targetMessage, messageId: messageId, isSent: senderUid === currentUser?.uid }; targetMessage.classList.add('pressed'); longPressTimer = setTimeout(() => { console.log(`Long press detected on message: ${messageId}`); showContextMenu(e.changedTouches ? e.changedTouches[0] : e); }, LONG_PRESS_DURATION); }
+        function handlePressEnd(e) { /* ... (same as before) ... */ clearTimeout(longPressTimer); if(longPressTargetInfo?.element) { longPressTargetInfo.element.classList.remove('pressed'); } }
+        function showContextMenu(positionEvent) { /* ... (same as before) ... */ if (!longPressTargetInfo) return; const { element, messageId, isSent } = longPressTargetInfo; messageContextMenu.innerHTML = ''; const deleteMeBtn = document.createElement('button'); deleteMeBtn.innerHTML = '<i class="fas fa-user-slash"></i> Delete for Me'; deleteMeBtn.onclick = () => handleContextMenuAction('delete_me'); messageContextMenu.appendChild(deleteMeBtn); if (isSent) { const deleteEveryoneBtn = document.createElement('button'); deleteEveryoneBtn.classList.add('delete-everyone'); deleteEveryoneBtn.innerHTML = '<i class="fas fa-users-slash"></i> Delete for Everyone'; deleteEveryoneBtn.onclick = () => handleContextMenuAction('delete_everyone'); messageContextMenu.appendChild(deleteEveryoneBtn); } const menuBuffer = 10; let top = positionEvent.pageY; let left = positionEvent.pageX; messageContextMenu.style.display = 'block'; const menuHeight = messageContextMenu.offsetHeight; const menuWidth = messageContextMenu.offsetWidth; if (left + menuWidth > window.innerWidth - menuBuffer) { left = window.innerWidth - menuWidth - menuBuffer; } if (top + menuHeight > window.innerHeight - menuBuffer) { top = window.innerHeight - menuHeight - menuBuffer; } if (left < menuBuffer) { left = menuBuffer; } if (top < menuBuffer) { top = menuBuffer; } messageContextMenu.style.top = `${top}px`; messageContextMenu.style.left = `${left}px`; menuOverlay.style.display = 'block'; }
+        function hideContextMenu() { /* ... (same as before) ... */ messageContextMenu.style.display = 'none'; menuOverlay.style.display = 'none'; if(longPressTargetInfo?.element) { longPressTargetInfo.element.classList.remove('pressed'); } longPressTargetInfo = null; }
+        menuOverlay.addEventListener('click', hideContextMenu); menuOverlay.addEventListener('touchstart', hideContextMenu, { passive: true });
+        function handleContextMenuAction(action) { /* ... (same as before) ... */ if (!longPressTargetInfo) return; const { messageId, isSent } = longPressTargetInfo; hideContextMenu(); if (action === 'delete_me') { handleDeleteForMeInternal(messageId); } else if (action === 'delete_everyone' && isSent) { handleDeleteForEveryoneInternal(messageId); } }
+        function handleDeleteForEveryoneInternal(messageId) { /* ... (same as before) ... */ if (!messageId || !currentChatId) return; if (confirm("Delete this message for everyone?")) { console.log(`Internal: Deleting message ${messageId} for everyone in chat ${currentChatId}`); const messageRef = dbRef(database, `chats/${currentChatId}/messages/${messageId}`); remove(messageRef).then(() => console.log("Message deleted successfully.")).catch(error => console.error("Error deleting message:", error)); } }
+        function handleDeleteForMeInternal(messageId) { /* ... (same as before) ... */ if (!messageId || !currentChatId || !currentUser) return; if (confirm("Delete this message only for you?")) { console.log(`Internal: Deleting message ${messageId} for me (UID: ${currentUser.uid}) in chat ${currentChatId}`); const messageRef = dbRef(database, `chats/${currentChatId}/messages/${messageId}/deletedFor/${currentUser.uid}`); set(messageRef, true).then(() => { console.log("Message marked deleted for me."); }).catch(error => console.error("Error marking message deleted:", error)); } }
+
+        // --- Send Message Functions (sendMessage, event listeners - Same as before) ---
+        function sendMessage() { /* ... (same as before) ... */ const messageText = messageInput.value.trim(); if (!messageText) return; if (!currentUser || !currentChatId || !currentChatPartner) { alert("Cannot send: No active chat or user."); return; } const messagesRef = dbRef(database, `chats/${currentChatId}/messages`); const newMessageRef = push(messagesRef); const timestamp = serverTimestamp(); let messageData = { senderUid: currentUser.uid, timestamp: timestamp, text: messageText }; set(newMessageRef, messageData).then(() => { messageInput.value = ''; messageInput.focus(); const myChatEntryRef = dbRef(database, `users/${currentUser.uid}/chats/${currentChatId}`); const partnerChatEntryRef = dbRef(database, `users/${currentChatPartner.uid}/chats/${currentChatId}`); const updateData = { lastTimestamp: timestamp }; update(myChatEntryRef, updateData).catch(e => console.error("Error updating my chat metadata:", e)); update(partnerChatEntryRef, updateData).catch(e => console.error("Error updating partner chat metadata:", e)); }).catch(error => { console.error("Error sending message: ", error); alert("Could not send message."); }); }
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+
+        // --- Profile Edit Functions (Event listeners, saveProfileButton logic - Same as before) ---
+        profileButton.addEventListener('click', () => { /* ... (same as before) ... */ if (!currentUser) return; const userRef = dbRef(database, 'users/' + currentUser.uid); get(userRef).then(snapshot => { if (snapshot.exists()) { currentUser = snapshot.val(); profileEmail.textContent = currentUser.email || 'N/A'; profileUid.textContent = currentUser.uid || 'N/A'; profileDisplayNameInput.value = currentUser.displayName || ''; profilePublicIdInput.value = currentUser.publicUserID || ''; profileStatus.textContent = ''; profileStatus.className = ''; showView('profile-edit-container'); } else { console.error("Could not load profile data to edit."); alert("Failed to load profile data."); } }); });
+        saveProfileButton.addEventListener('click', async () => { /* ... (same as before) ... */ if (!currentUser) return; const newDisplayName = profileDisplayNameInput.value.trim(); const newPublicId = profilePublicIdInput.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, ''); let changesMade = false; let updates = {}; if (newDisplayName && newDisplayName !== currentUser.displayName) { updates.displayName = newDisplayName; changesMade = true; } if (newPublicId && newPublicId !== currentUser.publicUserID) { if (newPublicId.length < 5) { profileStatus.textContent = 'Public UserID must be at least 5 characters.'; profileStatus.className = 'status-error'; return; } updates.publicUserID = newPublicId; changesMade = true; } if (!changesMade) { profileStatus.textContent = 'No changes detected.'; profileStatus.className = 'status-info'; return; } profileStatus.textContent = 'Saving...'; profileStatus.className = 'status-info'; showLoader(); const userDbRef = dbRef(database, 'users/' + currentUser.uid); try { await update(userDbRef, updates); if (updates.displayName && auth.currentUser) { await updateProfile(auth.currentUser, { displayName: updates.displayName }); } if(updates.displayName) currentUser.displayName = updates.displayName; if(updates.publicUserID) currentUser.publicUserID = updates.publicUserID; hideLoader(); profileStatus.textContent = 'Profile saved successfully!'; profileStatus.className = 'status-info'; console.log("Profile updated successfully:", updates); if (allUsersCache[currentUser.uid]) { if(updates.displayName) allUsersCache[currentUser.uid].displayName = updates.displayName; if(updates.publicUserID) allUsersCache[currentUser.uid].publicUserID = updates.publicUserID; } } catch (error) { hideLoader(); console.error("Error saving profile:", error); profileStatus.textContent = `Error saving: ${error.message}`; profileStatus.className = 'status-error'; } });
+
+        // --- Navigation Button Event Listeners (Same as before) ---
+        backToListButton.addEventListener('click', () => { detachMessageListener(); hideContextMenu(); showView('chat-list-container'); });
+        backToListFromProfileButton.addEventListener('click', () => { hideContextMenu(); showView('chat-list-container'); });
+
+
+        // --- *** NEW: Share Popup Logic *** ---
+
+        function showSharePopup() {
+            // --- *** YAHAN APNA LINK SET KAREN *** ---
+            // Abhi ke liye, yeh current page ka URL istemal karega.
+            // Baad mein aap ise Firebase se fetch karke set kar sakte hain.
+            // Example: const shareLink = await fetchShareLinkFromFirebase();
+            const shareLink = window.location.href;
+            // --- ******************************** ---
+
+            console.log('Showing share popup with link:', shareLink);
+            shareLinkDisplay.textContent = shareLink; // Link ko display area me daalo
+            copyStatusMessage.textContent = ''; // Purana message clear karo
+            copyLinkButton.innerHTML = '<i class="fas fa-copy"></i> Copy Link'; // Button text reset karo
+
+            // Overlay ko dikhao (smooth transition ke liye class add karo)
+            sharePopupOverlay.classList.add('visible');
+        }
+
+        function hideSharePopup() {
+             // Overlay ko chhupao (smooth transition ke liye class remove karo)
+             sharePopupOverlay.classList.remove('visible');
+        }
+
+        // Header ke Share Button pe click listener
+        shareAppButton.addEventListener('click', showSharePopup);
+
+        // Popup ke Close Button pe click listener
+        closeSharePopupButton.addEventListener('click', hideSharePopup);
+
+        // Popup ke bahar (overlay pe) click karne par close karne ke liye listener
+        sharePopupOverlay.addEventListener('click', (event) => {
+            // Agar click overlay pe hua hai (modal pe nahi), toh popup band karo
+            if (event.target === sharePopupOverlay) {
+                hideSharePopup();
+            }
+        });
+
+        // Popup ke Copy Button pe click listener
+        copyLinkButton.addEventListener('click', () => {
+            const linkToCopy = shareLinkDisplay.textContent;
+            clearTimeout(copyTimeout); // Purana timeout clear karo agar hai toh
+
+            if (!navigator.clipboard) {
+                console.warn('Clipboard API not available. Requires HTTPS or localhost.');
+                copyStatusMessage.textContent = 'Copy failed (HTTPS needed)';
+                copyStatusMessage.style.color = 'var(--danger-color)';
+                 copyTimeout = setTimeout(() => {
+                     copyStatusMessage.textContent = '';
+                 }, 3000);
+                return;
+            }
+
+            navigator.clipboard.writeText(linkToCopy).then(() => {
+                console.log('Link copied to clipboard:', linkToCopy);
+                copyStatusMessage.textContent = 'Link Copied!';
+                copyStatusMessage.style.color = 'var(--success-color)';
+                copyLinkButton.innerHTML = '<i class="fas fa-check"></i> Copied!'; // Change button text
+
+                // Thodi der baad message aur button text ko reset karo
+                 copyTimeout = setTimeout(() => {
+                    copyStatusMessage.textContent = '';
+                    copyLinkButton.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
+                 }, 2500); // 2.5 seconds
+
+            }).catch(err => {
+                console.error('Failed to copy link: ', err);
+                copyStatusMessage.textContent = 'Copy Failed!';
+                copyStatusMessage.style.color = 'var(--danger-color)';
+                 copyTimeout = setTimeout(() => {
+                     copyStatusMessage.textContent = '';
+                 }, 3000);
+            });
+        });
+
+        // --- *** END: Share Popup Logic *** ---
+
+
+        // --- Initial Call (Same as before) ---
+        renderAuthUI();
+
+    </script>
+</body>
+</html>

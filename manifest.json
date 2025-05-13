@@ -1,0 +1,22 @@
+{
+  "name": "Chat App - New UI",
+  "short_name": "ChatApp",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1877f2",
+  "description": "A new UI chat application.",
+  "icons": [
+    {
+      "src": "/app-icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/app-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "gcm_sender_id": "103953800507"
+}

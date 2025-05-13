@@ -3,446 +3,766 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Chat App - Final UI</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Chat App - New UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* --- ALL CSS FROM PREVIOUS FULL RESPONSE GOES HERE --- */
         :root {
-            --primary-color: #007bff; /* Blue */
-            --primary-dark: #0056b3; /* Darker Blue */
-            --secondary-color: #6c757d; /* Gray */
-            --accent-color: #17a2b8; /* Teal/Cyan Accent */
-            --light-bg: #ffffff;
-            --app-bg: #f4f7f6; /* Very light gray for overall background */
-            --dark-text: #333333; /* Darker gray for text */
-            --medium-text: #555555;
-            --light-text-on-dark: #ffffff; /* White text on dark backgrounds */
-            --border-color: #ced4da; /* Lighter border */
-            --input-bg: #ffffff;
-            --sent-bg: #dcf8c6;
-            --received-bg: #ffffff;
-            --chat-bg: #e5ddd5;
-            --danger-color: #dc3545;
-            --success-color: #28a745;
-            --placeholder-text: #6c757d;
-            --google-color: #DB4437;
-            --shadow-light: rgba(0, 0, 0, 0.05);
-            --shadow-medium: rgba(0, 0, 0, 0.1);
+            --app-bg-light: #f0f2f5; /* Light grey background like new UI */
+            --container-bg-light: #ffffff;
+            --primary-text-light: #050505; /* Almost black for primary text */
+            --secondary-text-light: #65676b; /* Grey for secondary text */
+            --border-color-light: #ced0d4;
+            --input-bg-light: #f0f2f5; /* Light grey for input fields */
+            --header-bg-light: #ffffff;
+            --header-text-light: #050505;
+            --sent-bg-light: #0084ff; /* Blue for sent messages */
+            --sent-text-light: #ffffff;
+            --received-bg-light: #e4e6eb; /* Light grey for received messages */
+            --received-text-light: #050505;
+
+            --app-bg-dark: #18191a;
+            --container-bg-dark: #242526;
+            --primary-text-dark: #e4e6eb;
+            --secondary-text-dark: #b0b3b8;
+            --border-color-dark: #3a3b3c;
+            --input-bg-dark: #3a3b3c;
+            --header-bg-dark: #242526;
+            --header-text-dark: #e4e6eb;
+            --sent-bg-dark: #0078ff;
+            --sent-text-dark: #ffffff;
+            --received-bg-dark: #3a3b3c;
+            --received-text-dark: #e4e6eb;
+
+            /* General Variables */
+            --app-bg: var(--app-bg-light);
+            --container-bg: var(--container-bg-light);
+            --primary-text-color: var(--primary-text-light);
+            --secondary-text-color: var(--secondary-text-light);
+            --border-color: var(--border-color-light);
+            --input-bg: var(--input-bg-light);
+            --header-bg: var(--header-bg-light);
+            --header-text-color: var(--header-text-light);
+            --sent-bg: var(--sent-bg-light);
+            --sent-text: var(--sent-text-light);
+            --received-bg: var(--received-bg-light);
+            --received-text: var(--received-text-light);
+
+            --highlight-color: #1877f2;
+            --highlight-darker-color: #166fe5;
+            --online-color: #31a24c;
+            --success-color: #31a24c; /* For success messages */
+            --read-tick-color: #0084ff;
+            --danger-color: #fa383e;
+
+            --bottom-nav-height: 60px;
+            --fab-size: 56px;
+            --fab-offset: 10px;
+
+            --font-size-base: 16px;
+            --font-scale-small: 0.875;
+            --font-scale-default: 1;
+            --font-scale-large: 1.125;
         }
+
+        body.dark-mode {
+            --app-bg: var(--app-bg-dark);
+            --container-bg: var(--container-bg-dark);
+            --primary-text-color: var(--primary-text-dark);
+            --secondary-text-color: var(--secondary-text-dark);
+            --border-color: var(--border-color-dark);
+            --input-bg: var(--input-bg-dark);
+            --header-bg: var(--header-bg-dark);
+            --header-text-color: var(--header-text-dark);
+            --sent-bg: var(--sent-bg-dark);
+            --sent-text: var(--sent-text-dark);
+            --received-bg: var(--received-bg-dark);
+            --received-text: var(--received-text-dark);
+        }
+        body.font-small { font-size: calc(var(--font-size-base) * var(--font-scale-small)); }
+        body.font-default { font-size: calc(var(--font-size-base) * var(--font-scale-default)); }
+        body.font-large { font-size: calc(var(--font-size-base) * var(--font-scale-large)); }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         html, body { height: 100%; width: 100%; overflow: hidden; }
-
-        body {
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Modern Font Stack */
-            background-color: var(--app-bg);
-            display: flex; justify-content: center; align-items: center;
-            color: var(--dark-text); user-select: none;
-        }
-
-        #app-container {
-            width: 100%; height: 100%; max-width: 100%; max-height: 100%;
-            background-color: var(--light-bg); border-radius: 0; box-shadow: none;
-            overflow: hidden; display: flex; flex-direction: column; position: relative;
-        }
-
-        .view { display: none !important; flex-direction: column; height: 100%; width: 100%; background-color: var(--light-bg); flex-grow: 1; overflow: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--app-bg); display: flex; justify-content: center; align-items: center; color: var(--primary-text-color); user-select: none; transition: background-color 0.3s, color 0.3s; }
+        #app-container { width: 100%; height: 100%; background-color: var(--container-bg); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+        .view { display: none !important; flex-direction: column; width: 100%; background-color: var(--app-bg); flex-grow: 1; overflow: hidden; }
         .view.active { display: flex !important; }
+        #initial-loading-view { justify-content: center; align-items: center; flex-direction: column; font-size: 1.2em; color: var(--secondary-text-color); background-color: var(--container-bg); height: 100%; }
+        #initial-loading-view .loader { margin-bottom: 20px; border-top: 6px solid var(--highlight-color); }
+        .app-header { background: var(--header-bg); color: var(--header-text-color); padding: 0 10px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; border-bottom: 1px solid var(--border-color); height: 56px; position: sticky; top: 0; z-index: 10; }
+        .app-header .header-left, .app-header .header-right { display: flex; align-items: center; min-width: 40px; }
+        .app-header .header-left { justify-content: flex-start; }
+        .app-header .header-right { justify-content: flex-end; }
+        .app-header .header-title { flex-grow: 1; text-align: center; font-size: 1.1em; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 5px;}
+        .app-header .header-icon { color: var(--secondary-text-color); background: none; border: none; font-size: 1.25em; cursor: pointer; padding: 10px; line-height: 1; }
+        .app-header .header-icon.back-arrow { font-size: 1.4em; }
+        #auth-container { background-color: var(--app-bg); justify-content: center; }
+        .auth-forms-wrapper { background-color: var(--container-bg); box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 360px; margin: auto; padding: 25px; border-radius: 12px;}
+        .auth-forms-wrapper h2 { font-size: 1.8em; font-weight: 600; color: var(--primary-text-color); margin-bottom: 20px; text-align: center; }
+        .auth-form { width: 100%; margin-bottom: 15px;}
+        .input-group { position: relative; margin-bottom: 12px; }
+        .input-group input { width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95em; background-color: var(--input-bg); color: var(--primary-text-color); }
+        .input-group input[type="password"] { padding-right: 40px; }
+        .password-toggle { position: absolute; top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: var(--secondary-text-color); font-size: 1em; }
+        .auth-forms-wrapper button { width: 100%; padding: 12px; background-color: var(--highlight-color); color: white !important; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95em; font-weight: 500; margin-top: 8px; }
+        .auth-forms-wrapper button#google-signin-button { background-color: #4285F4; margin-top: 12px;}
+        #auth-status { margin-top: 12px; font-weight: 500; font-size: 0.85em; min-height: 1.1em; text-align:center; }
+        .status-error { color: var(--danger-color) !important; } .status-info { color: var(--success-color) !important; }
+        .auth-switch { margin-top: 18px; font-size: 0.85em; color: var(--secondary-text-color); text-align:center;}
+        .auth-switch button { font-size: 1em; background: none; color: var(--highlight-color) !important; padding: 0; margin-left: 4px; border: none; cursor: pointer; font-weight:500;}
+        .forgot-password-link { display: block; text-align: right; font-size: 0.8em; margin-top: -8px; margin-bottom: 12px; }
+        .forgot-password-link button { font-size: 1em; background: none; color: var(--highlight-color) !important; padding:0; text-decoration:none; }
+        #chat-list-view .app-header .header-title { text-align: center; }
+        #search-area { padding: 8px 12px; border-bottom: 1px solid var(--border-color); background-color: var(--container-bg); }
+        #user-search-input { width: 100%; padding: 10px 15px; border-radius: 20px; border:none; background-color:var(--input-bg); font-size: 0.95em; }
+        #main-list-area { flex-grow: 1; overflow-y: auto; position: relative; }
+        #chats-list { height: 100%; overflow-y: auto; }
+        #search-results-list { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--container-bg); z-index:5; overflow-y:auto; display:none; border-top: 1px solid var(--border-color); }
+        .list-item { display: flex; align-items: center; padding: 10px 15px; border-bottom: 1px solid var(--app-bg); cursor: pointer; background-color: var(--container-bg); transition: background-color 0.2s;}
+        .list-item:hover { background-color: var(--app-bg); }
+        .list-item .avatar { font-size: 1.7em; margin-right: 12px; color: var(--primary-text-color); width: 44px; height: 44px; background: var(--input-bg); border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; position:relative; line-height: 1; }
+        .list-item .avatar.initial-avatar { background: var(--highlight-color); color: var(--container-bg); font-size: 1.4em; }
+        .list-item .avatar .online-indicator { position: absolute; bottom: 0px; right: 0px; width: 12px; height: 12px; background-color: var(--online-color); border-radius: 50%; border: 2px solid var(--container-bg); display: none; }
+        .list-item .avatar .online-indicator.is-online { display: block; }
+        .list-item-info { flex-grow: 1; overflow: hidden; } .list-item-info .name { font-weight: 500; font-size: 0.95em; margin-bottom: 2px; } .list-item-info .detail { font-size: 0.8em; color: var(--secondary-text-color); }
+        .list-placeholder { text-align:center; margin-top:20px; color:var(--secondary-text-color); font-size: 0.95em; padding: 10px; }
+        #chat-view .app-header { padding: 8px 10px; height: 60px; }
+        .chat-header-avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.4em; color: var(--primary-text-color); background-color: var(--input-bg); line-height: 1; }
+        .chat-header-avatar.initial-avatar { background-color: var(--highlight-color); color: var(--container-bg); font-size: 1.2em;}
+        #chat-view .header-title-group { display: flex; flex-direction: column; align-items: flex-start; flex-grow:1; overflow:hidden; margin-left: 5px;}
+        #chat-view .header-title-group .chat-partner-name { font-size: 1em; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; color: var(--primary-text-color); }
+        #chat-view .header-title-group .chat-partner-status { font-size: 0.75em; color: var(--secondary-text-color); opacity: 0.9;}
+        #messages-area { background-color: var(--container-bg); padding: 10px; flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; -webkit-overflow-scrolling: touch; }
+        #messages-area::after { content: ''; display: block; height: 10px; }
+        .message-wrapper { max-width: 80%; margin-bottom: 8px; display: flex; width: fit-content; }
+        .message-wrapper.sent { align-self: flex-end; }
+        .message-wrapper.received { align-self: flex-start; }
+        .message { padding: 8px 12px; border-radius: 18px; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,0.08); cursor:pointer; }
+        .sent .message { background-color: var(--sent-bg); color: var(--sent-text); border-bottom-right-radius: 4px; }
+        .received .message { background-color: var(--received-bg); color: var(--received-text); border-bottom-left-radius: 4px; }
+        .message .text { font-size: 0.95em; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; white-space: pre-wrap; }
+        .message-meta { display: flex; align-items: center; margin-top: 4px; justify-content: flex-end; }
+        .message .timestamp { font-size: 0.7em; margin-left: 8px; }
+        .sent .message .timestamp { color: rgba(255,255,255,0.75); }
+        .received .message .timestamp { color: var(--secondary-text-color); }
+        .message-ticks { font-size: 0.85em; color: rgba(255,255,255,0.75); margin-left: 5px; line-height: 1; }
+        .message-ticks.read { color: var(--read-tick-color); }
+         .sent .message-ticks.read { color: var(--read-tick-color); }
+        .date-separator { text-align: center; margin: 15px 0; font-size: 0.75em; color: var(--secondary-text-color); background-color: #e0e0e0; display: inline-block; padding: 3px 8px; border-radius: 10px; align-self: center; }
+        #input-area { background-color: var(--container-bg); border-top: 1px solid var(--border-color); padding: 8px 12px; display:flex; align-items:center; flex-shrink:0; }
+        #message-input { flex-grow: 1; background-color: var(--input-bg); border: none; border-radius: 20px; padding: 10px 18px; font-size: 1em; margin-right:8px; }
+        #send-button { width: 44px; height: 44px; border-radius: 50%; background-color: var(--sent-bg); color:white; border:none; display:flex; align-items:center; justify-content:center; font-size:1.1em; flex-shrink:0;}
+        #send-button:hover { background-color: #0073e6; }
+        .blocked-chat-overlay { position: absolute; bottom: 0; left: 0; right: 0; background-color: rgba(230, 230, 230, 0.9); padding: 10px; text-align: center; font-size: 0.9em; color: var(--secondary-text-color); z-index: 5; border-top: 1px solid var(--border-color); }
+        body.dark-mode .blocked-chat-overlay { background-color: rgba(50,50,50,0.9); }
+        .blocked-chat-overlay button { margin-left: 10px; padding: 5px 10px; background-color: var(--highlight-color); color: white; border: none; border-radius: 4px; cursor: pointer; }
+        #profile-settings-view .view-content { overflow-y: auto; padding:0; background-color: var(--app-bg); }
+        .profile-card { background-color: var(--container-bg); padding: 24px; text-align: center; border-bottom: 8px solid var(--app-bg); }
+        .profile-avatar-lg { width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 12px auto; display: flex; justify-content: center; align-items: center; font-size: 3em; color: var(--primary-text-color); background-color: var(--input-bg); border: 2px solid var(--container-bg); box-shadow: 0 0 0 2px var(--highlight-color); line-height: 1; }
+        .profile-avatar-lg.initial-avatar { font-size: 2.8em; background-color: var(--highlight-color); color: var(--container-bg); }
+        .profile-name-lg { font-size: 1.4em; font-weight: 600; margin-bottom: 2px; }
+        .profile-email-sm { font-size: 0.85em; color: var(--secondary-text-color); margin-bottom: 18px; }
+        .edit-profile-btn { background-color: var(--highlight-color); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 0.95em; font-weight: 500; cursor: pointer; }
+        .settings-list { background-color: var(--container-bg); }
+        .settings-item { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--app-bg); cursor: pointer; }
+        .settings-item:last-child { border-bottom: none; }
+        .settings-item .item-icon { font-size: 1.1em; color: var(--secondary-text-color); margin-right: 15px; width: 22px; text-align: center; }
+        .settings-item .item-label { flex-grow: 1; font-size: 0.95em; }
+        .settings-item .item-value { font-size: 0.9em; color: var(--secondary-text-color); }
+        .settings-item .item-arrow { font-size: 0.8em; color: var(--secondary-text-color); margin-left: 10px; }
+        #profile-edit-view .view-content { overflow-y: auto; padding: 15px 20px; }
+        .edit-avatar-section { text-align: center; margin-bottom: 25px; }
+        .edit-avatar-display { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 12px auto; display: flex; justify-content: center; align-items: center; font-size: 3.5em; color: var(--primary-text-color); background-color: var(--input-bg); border: 2px solid var(--highlight-color); line-height: 1; }
+        .edit-avatar-display.initial-avatar { font-size: 3em; background-color: var(--highlight-color); color: var(--container-bg); }
+        .avatar-actions button { background: none; border: none; color: var(--highlight-color); font-size: 0.9em; cursor: pointer; padding: 6px 10px; margin: 0 5px; }
+        .avatar-actions button.delete-avatar { color: var(--danger-color); }
+        .avatar-picker-container { margin-top:15px; margin-bottom: 20px; width:100%; }
+        #current-avatar-preview-edit { display:none; }
+        .emoji-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; max-height: 160px; overflow-y: auto; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--app-bg); }
+        .emoji-option { font-size: 1.6em; padding: 6px; border-radius: 6px; cursor: pointer; text-align: center; transition: background-color 0.2s, transform 0.1s; line-height: 1; }
+        .emoji-option.selected { background-color: var(--highlight-color); color: var(--container-bg); transform: scale(1.1); }
+        .form-section-title { font-size: 0.8em; font-weight: 600; color: var(--secondary-text-color); margin: 20px 0 8px 0; text-transform: uppercase; letter-spacing: 0.5px;}
+        .profile-form-group label { display: block; font-size: 0.8em; color: var(--secondary-text-color); margin-bottom: 5px; }
+        .profile-form-group input, .profile-form-group select { width: 100%; padding: 10px 12px; font-size: 0.95em; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--container-bg); }
+        #profile-edit-status-msg { text-align:center; margin-top:15px; font-size:0.9em; }
+        .bottom-nav { display: flex; justify-content: space-around; align-items: center; height: var(--bottom-nav-height); background-color: var(--container-bg); border-top: 1px solid var(--border-color); position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; display:none; }
+        .bottom-nav.visible { display: flex; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; color: var(--secondary-text-color); font-size: 0.7em; cursor: pointer; padding: 5px 0; }
+        .nav-item i { font-size: 1.5em; margin-bottom: 3px; }
+        .nav-item.active { color: var(--highlight-color); }
+        .nav-item.fab-placeholder { flex-grow: 0.6; }
+        .fab-button { position: fixed; bottom: calc(var(--bottom-nav-height) / 2 - var(--fab-size) / 2 + var(--fab-offset) - 5px); left: 50%; transform: translateX(-50%); width: var(--fab-size); height: var(--fab-size); border-radius: 50%; background-color: var(--highlight-color); color: white; display: flex; justify-content: center; align-items: center; font-size: 1.8em; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; z-index: 101; border: 3px solid var(--container-bg); display:none; }
+        .fab-button.visible { display: flex; }
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid var(--highlight-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(255,255,255,0.7); display:none; justify-content:center; align-items:center; z-index: 1000; }
+        body.dark-mode .loader-overlay { background-color: rgba(0,0,0,0.7); }
+        #message-context-menu { position: absolute; display: none; background-color: var(--container-bg); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); padding: 5px 0; z-index: 200; min-width: 180px; }
+        #message-context-menu button { display: flex; align-items: center; width: 100%; background: none; border: none; color: var(--primary-text-color); padding: 10px 15px; text-align: left; font-size: 0.95em; cursor: pointer; }
+        #message-context-menu button:hover { background-color: var(--app-bg); }
+        #message-context-menu button i { margin-right: 10px; width: 18px; text-align: center; color: var(--secondary-text-color); }
+        #message-context-menu button.delete-everyone { color: var(--danger-color); }
+        #message-context-menu button.delete-everyone i { color: var(--danger-color); }
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 199; display: none; }
+        #share-popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1100; padding: 15px; opacity:0; transition: opacity 0.3s ease-in-out; }
+        #share-popup-overlay.visible { display: flex; opacity:1; }
+        #share-popup-modal { background-color: var(--container-bg); padding: 20px 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 90%; max-width: 350px; text-align: center; transform: scale(0.9); opacity:0; transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; }
+        #share-popup-overlay.visible #share-popup-modal { transform: scale(1); opacity:1; }
+        #share-popup-modal h3 { color: var(--primary-text-color); font-size: 1.2em; font-weight: 600; margin-top: 0; margin-bottom: 15px; }
+        #share-popup-modal .link-display { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9em; background-color: var(--input-bg); color: var(--primary-text-color); text-align: left; font-family: 'Courier New', Courier, monospace; word-break: break-all; user-select: text; line-height: 1.4; }
+        #share-popup-modal #copy-link-button { background-color:var(--highlight-color); margin-top: 0; font-size: 0.95em; padding: 10px; }
+        #share-popup-modal #copy-link-button i { margin-right: 8px; }
+        #share-popup-modal .close-button { position: absolute; top: 5px; right: 5px; background: none; border: none; font-size: 1.6em; color: var(--secondary-text-color); cursor: pointer; padding: 5px; }
+        #copy-status-message { font-size: 0.85em; color: var(--success-color); margin-top: 8px; height: 1.1em; font-weight: 500; }
+        .settings-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1200; opacity:0; transition: opacity 0.3s; }
+        .settings-modal-overlay.visible { display:flex; opacity:1; }
+        .settings-modal { background-color: var(--container-bg); padding: 20px 25px; border-radius: 12px; width: 90%; max-width: 380px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        .settings-modal h3 { color: var(--primary-text-color); font-size: 1.3em; margin-top:0; margin-bottom: 20px; text-align: center; }
+        .settings-modal .modal-options .option, .settings-modal .modal-input-group label { display: block; padding: 12px 0; font-size: 1em; color: var(--primary-text-color); cursor: pointer; border-bottom: 1px solid var(--border-color); }
+        .settings-modal .modal-options .option:last-child { border-bottom: none; }
+        .settings-modal .modal-options .option.selected { font-weight: bold; color: var(--highlight-color); }
+        .settings-modal .modal-input-group { margin-bottom: 15px; }
+        .settings-modal .modal-input-group input { width:100%; padding:10px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--primary-text-color); font-size: 1em; }
+        .settings-modal .modal-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;}
+        .settings-modal .modal-actions button { padding: 8px 15px; border-radius: 6px; border:none; font-size: 0.9em; cursor: pointer; }
+        .settings-modal .modal-actions .save-btn { background-color: var(--highlight-color); color:white; }
+        .settings-modal .modal-actions .cancel-btn { background-color: var(--input-bg); color:var(--primary-text-color); }
+        #chat-options-menu { position: absolute; background-color: var(--container-bg); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 200; min-width: 180px; display: none; }
+        #chat-options-menu button { display: block; width: 100%; padding: 12px 15px; text-align: left; background: none; border: none; font-size: 0.95em; color: var(--primary-text-color); cursor: pointer; }
+        #chat-options-menu button:hover { background-color: var(--app-bg); }
+        #chat-options-menu button.block-user { color: var(--danger-color); }
 
-        .app-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-            color: var(--light-text-on-dark); padding: 14px 15px; /* Increased padding */
-            display: flex; justify-content: space-between; align-items: center;
-            flex-shrink: 0; box-shadow: 0 3px 6px var(--shadow-medium);
-            position: relative; z-index: 10;
-        }
-        .app-header h2 { font-size: 1.25em; font-weight: 500; margin: 0; text-align: center; flex-grow: 1; }
-        .header-icon { color: var(--light-text-on-dark); background: none; border: none; font-size: 1.35em; cursor: pointer; padding: 8px; line-height: 1; margin-left: 5px; /* Add some space between icons */ }
-        .header-icon:first-child { margin-left: 0; } /* No left margin for the very first icon */
-        .header-icon.back-button { font-size: 1.15em; margin-right: 10px; margin-left: 0; }
-        .app-header .placeholder-icon { visibility: hidden; }
+        /* Admin Panel Styles */
+        .admin-section { background-color: var(--container-bg); padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .admin-section h3 { font-size: 1.1em; color: var(--primary-text-color); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        #admin-user-search-input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--border-color); background-color:var(--input-bg); font-size: 0.95em; margin-bottom: 10px; }
+        #admin-user-list { max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--app-bg); }
+        .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--app-bg); font-size: 0.9em; }
+        .admin-user-item:last-child { border-bottom: none; }
+        .admin-user-info { flex-grow: 1; margin-right: 10px; }
+        .admin-user-info p { margin: 3px 0; font-size: 0.9em; color: var(--secondary-text-color); word-break: break-word; }
+        .admin-user-info p strong { color: var(--primary-text-color); min-width: 70px; display: inline-block; }
+        .admin-user-actions { display: flex; flex-direction: column; gap: 5px; align-items: flex-end;} /* Make buttons stack */
+        .admin-user-actions button { font-size: 0.8em; padding: 5px 8px; border-radius: 4px; cursor: pointer; border: none; color: white; min-width: 60px; text-align: center; }
+        .admin-user-actions .ban-btn { background-color: var(--danger-color); }
+        .admin-user-actions .unban-btn { background-color: var(--success-color); }
+        .admin-user-actions .edit-user-btn { background-color: var(--highlight-color); } /* Edit button style */
 
-        /* Auth View Styles */
-        #auth-container { padding: 30px 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-grow: 1; background-color: var(--app-bg); }
-        .auth-forms-wrapper { width: 100%; max-width: 380px; margin: auto; padding: 30px 25px; background-color: var(--light-bg); border-radius: 12px; box-shadow: 0 5px 20px var(--shadow-medium); }
-        .auth-forms-wrapper h2 { font-size: 2.2em; font-weight: 700; color: var(--primary-color); margin-bottom: 30px; }
-        .auth-form { width: 100%; margin-bottom: 25px; padding: 0; border: none; background: none; box-shadow: none; }
-        .auth-form h3 { margin-top: 0; margin-bottom: 20px; color: var(--secondary-color); font-size: 1.1em; font-weight: 400; }
-        input[type="email"], input[type="password"], input[type="text"], input[type="search"] { width: 100%; padding: 15px; margin-bottom: 18px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1em; background-color: var(--input-bg); transition: border-color 0.3s, box-shadow 0.3s; color: var(--dark-text); }
-        input::placeholder { color: var(--placeholder-text); }
-        input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); outline: none; }
-
-        /* Auth Button Styles (Included popup copy button) */
-        .auth-forms-wrapper button, #save-profile-button, #copy-link-button /* Added copy button */ { width: 100%; padding: 15px; background-color: var(--primary-color); color: var(--light-text-on-dark) !important; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 12px; transition: all 0.3s ease; box-shadow: 0 2px 4px var(--shadow-light); }
-        .auth-forms-wrapper button:hover, #save-profile-button:hover, #copy-link-button:hover { background-color: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 8px var(--shadow-medium); }
-        .auth-forms-wrapper button:active, #save-profile-button:active, #copy-link-button:active { transform: translateY(0); box-shadow: 0 2px 4px var(--shadow-light); }
-        .auth-forms-wrapper button#google-signin-button { background-color: var(--google-color); }
-        .auth-forms-wrapper button#google-signin-button:hover { background-color: #c33d2e; }
-        #auth-status { margin-top: 20px; font-weight: 500; font-size: 0.95em; min-height: 1.3em; color: var(--dark-text); }
-        .status-error { color: var(--danger-color) !important; }
-        .status-info { color: var(--success-color) !important; }
-        .auth-forms-wrapper button.secondary { background-color: var(--secondary-color); }
-        .auth-forms-wrapper button.secondary:hover { background-color: #545b62; }
-        .auth-switch { margin-top: 30px; font-size: 0.95em; color: var(--medium-text); }
-        .auth-switch button { font-size: 1em; background: none; color: var(--accent-color) !important; padding: 0; margin: 0 0 0 5px; width: auto; text-decoration: none; font-weight: 500; border: none; cursor: pointer; }
-        .auth-switch button:hover { text-decoration: underline; }
-        .forgot-password-link { display: block; text-align: right; font-size: 0.9em; margin-top: -8px; margin-bottom: 20px; }
-        .forgot-password-link button { font-size: 1em; background: none; color: var(--secondary-color) !important; padding:0; width:auto; text-decoration:underline; font-weight: normal; margin:0;}
-
-        /* Chat List Styles */
-        #chat-list-container {} #chat-list-container .app-header h2 { flex-grow: 1; text-align: center; }
-        .header-icon-group { display: flex; align-items: center; }
-        #search-area { padding: 12px 15px; border-bottom: 1px solid var(--border-color); background-color: #f8f9fa; flex-shrink: 0; }
-        #user-search-input { margin-bottom: 0; width: 100%; padding: 12px 18px; border-radius: 25px; border:1px solid var(--border-color); font-size: 1em; }
-        #main-list-area { flex-grow: 1; overflow-y: auto; position: relative;} #chats-list { height: 100%; overflow-y: auto; }
-        #search-results-list { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.98); overflow-y: auto; z-index: 5; display: none; }
-        .list-item { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background-color 0.2s ease; background-color: var(--light-bg); }
-        .list-item:last-child { border-bottom: none; } .list-item:hover { background-color: #e9ecef; }
-        .list-item .avatar { font-size: 1.5em; margin-right: 15px; color: var(--light-text-on-dark); width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%); border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; font-weight: 500; }
-        .list-item-info { flex-grow: 1; overflow: hidden; } .list-item-info span { display: block; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .list-item-info .name { font-weight: 500; color: var(--dark-text); font-size: 1.1em; } .list-item-info .detail { font-size: 0.9em; color: var(--medium-text); } .list-placeholder { text-align: center; margin-top: 40px; color: var(--placeholder-text); font-size: 1.1em; padding: 20px; }
-
-        /* Chat View Styles */
-        #chat-container {} #messages-area { flex-grow: 1; overflow-y: auto; padding: 15px; background-color: var(--chat-bg); display: flex; flex-direction: column; } #messages-area::after { content: ''; display: block; height: 10px; } .message-wrapper { display: flex; margin-bottom: 5px; } .message-wrapper.sent { justify-content: flex-end; } .message-wrapper.received { justify-content: flex-start; } .message { display: flex; flex-direction: column; max-width: 80%; padding: 10px 15px; border-radius: 18px; word-wrap: break-word; box-shadow: 0 1px 2px var(--shadow-light); line-height: 1.45; position: relative; cursor: pointer; transition: transform 0.1s ease; } .message.pressed { transform: scale(0.98); background-color: rgba(0,0,0,0.05);} .message .text { font-size: 1em; margin-bottom: 3px; color: var(--dark-text) } .message .timestamp { font-size: 0.7em; color: #888; text-align: right; margin-top: auto; margin-left: 10px; } .sent .message { background-color: var(--sent-bg); border-bottom-right-radius: 8px; align-items: flex-end; } .received .message { background-color: var(--received-bg); border-bottom-left-radius: 8px; align-items: flex-start; }
-        #input-area { display: flex; padding: 10px 12px; border-top: 1px solid var(--border-color); background-color: #f8f9fa; align-items: center; flex-shrink: 0; }
-        #message-input { flex-grow: 1; margin-right: 10px; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border-color); font-size: 1em; background-color: var(--input-bg); }
-        #send-button { width: 48px; height: 48px; border-radius: 50%; font-size: 1.25em; background-color: var(--primary-color); padding: 0; display: flex; justify-content: center; align-items: center; flex-shrink: 0; color:white; border:none; transition: background-color 0.2s; }
-        #send-button:hover { background-color: var(--primary-dark); }
-
-        /* Profile Edit View Styles */
-        #profile-edit-container {} #profile-edit-container .profile-content { padding: 25px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; align-items: center; } .profile-form-group { margin-bottom: 20px; width:100%; max-width: 380px; } .profile-form label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--secondary-color); text-align: left; } .profile-form input { width:100%; padding: 14px; }
-        .profile-info { margin-bottom: 30px; padding: 20px; background-color: #e9ecef; border-radius: 8px; text-align: left; width:100%; max-width: 380px; } .profile-info p { margin: 8px 0; font-size: 1em; word-wrap: break-word; } .profile-info strong { color: var(--dark-text); margin-right: 5px; } .profile-info .public-id-display { font-family: 'Courier New', Courier, monospace; background-color: #dcdcdc; padding: 3px 6px; border-radius: 4px; display: inline-block; } #profile-status { margin-top: 20px; font-weight: 500; text-align: center; width:100%; max-width: 380px;}
-
-        /* Message Context Menu Styles */
-        #message-context-menu { position: absolute; display: none; background-color: var(--light-bg); border-radius: 8px; box-shadow: 0 4px 12px var(--shadow-medium); padding: 8px 0; z-index: 100; min-width: 200px; } #message-context-menu button { display: flex; align-items: center; width: 100%; background: none; border: none; color: var(--dark-text); padding: 12px 18px; text-align: left; font-size: 1em; cursor: pointer; margin: 0; border-radius: 0; } #message-context-menu button:hover { background-color: #f1f1f1; } #message-context-menu button i { margin-right: 12px; width: 20px; text-align: center; color: var(--secondary-color); } #message-context-menu button.delete-everyone { color: var(--danger-color); } #message-context-menu button.delete-everyone i { color: var(--danger-color); } .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99; display: none; }
-
-        /* Loader Styles */
-        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(255,255,255,0.7); display:none; justify-content:center; align-items:center; z-index: 1000; } .loader { border: 6px solid #f3f3f3; border-top: 6px solid var(--primary-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- NEW: Share Popup Styles --- */
-        .popup-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
-            display: none; /* Hidden by default */
-            justify-content: center; align-items: center;
-            z-index: 1100; /* Above other elements */
-            padding: 15px; /* Add padding for smaller screens */
-            opacity: 0; /* Start hidden for transition */
-            transition: opacity 0.3s ease;
-        }
-        .popup-overlay.visible {
-            display: flex;
-            opacity: 1;
-        }
-        .popup-modal {
-            background-color: var(--light-bg);
-            padding: 25px 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15); /* Enhanced shadow */
-            width: 100%; /* Full width within padding */
-            max-width: 400px;
-            display: flex; flex-direction: column;
-            position: relative; /* For close button positioning */
-            text-align: center;
-            transform: scale(0.95); /* Start slightly smaller for transition */
-            transition: transform 0.3s ease;
-        }
-        .popup-overlay.visible .popup-modal {
-            transform: scale(1);
-        }
-        .popup-modal h3 {
-            color: var(--primary-color);
-            font-size: 1.4em; /* Adjusted size */
-            font-weight: 600;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-        .popup-modal .link-display {
-            width: 100%; padding: 12px 15px; margin-bottom: 20px;
-            border: 1px solid var(--border-color); border-radius: 8px;
-            font-size: 0.9em; /* Slightly smaller */
-            background-color: #e9ecef; /* Light gray background */
-            color: var(--dark-text);
-            text-align: left;
-            font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace; /* Better monospace font stack */
-            word-break: break-all; /* Ensure long links break */
-            -webkit-user-select: text; /* Allow selecting text */
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text; /* Standard property */
-            line-height: 1.5;
-        }
-        .popup-modal #copy-link-button {
-            margin-top: 0; /* Remove top margin, rely on link display margin */
-            font-size: 1em; /* Slightly smaller button */
-            padding: 12px;
-        }
-         .popup-modal #copy-link-button i { /* Style for icon inside button */
-            margin-right: 8px;
-        }
-        .popup-modal .close-button {
-            position: absolute; top: 8px; right: 8px; /* Adjusted position */
-            background: none; border: none;
-            font-size: 1.7em; /* Adjusted size */
-            color: var(--secondary-color);
-            line-height: 1; cursor: pointer; padding: 5px;
-        }
-         .popup-modal .close-button:hover {
-            color: var(--dark-text);
-         }
-         .popup-copy-status { /* For displaying "Copied!" message */
-            font-size: 0.9em;
-            color: var(--success-color);
-            margin-top: 10px;
-            height: 1.2em; /* Reserve space */
-            font-weight: 500;
-         }
-
+        /* Admin Edit User Modal Styles */
+        #admin-edit-user-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1300; opacity:0; transition: opacity 0.3s; }
+        #admin-edit-user-modal-overlay.visible { display:flex; opacity:1; }
+        #admin-edit-user-modal { background-color: var(--container-bg); padding: 20px 25px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        #admin-edit-user-modal h3 { color: var(--primary-text-color); font-size: 1.2em; margin-top:0; margin-bottom: 15px; text-align: center; }
+        #admin-edit-user-modal .form-group { margin-bottom: 12px; }
+        #admin-edit-user-modal .form-group label { display: block; font-size: 0.85em; color: var(--secondary-text-color); margin-bottom: 4px; }
+        #admin-edit-user-modal .form-group input[type="text"],
+        #admin-edit-user-modal .form-group input[type="email"] { width:100%; padding:10px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--primary-text-color); font-size: 0.95em; }
+        #admin-edit-user-modal .form-group input[readonly] { background-color: var(--app-bg); cursor: not-allowed; }
+        #admin-edit-user-modal .modal-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;}
+        #admin-edit-user-modal .modal-actions button { padding: 8px 15px; border-radius: 6px; border:none; font-size: 0.9em; cursor: pointer; }
+        #admin-edit-user-modal-status { font-size: 0.85em; margin-top:10px; text-align: center; min-height: 1em;}
     </style>
 </head>
 <body>
+    <!-- HTML structure ... (Main structure remains the same) -->
     <div id="app-container">
+        <div id="initial-loading-view" class="view active"> <div class="loader"></div> <p>Loading app...</p> </div>
+        <div id="auth-container" class="view no-bottom-nav"> <div class="auth-forms-wrapper"></div> </div>
+        <div id="chat-list-view" class="view">
+            <div class="app-header"> <div class="header-left"> <button id="chat-list-profile-btn" class="header-icon"><i class="fas fa-user-circle"></i></button> </div> <div class="header-title">Chats</div> <div class="header-right"> <button id="chat-list-more-btn" class="header-icon"><i class="fas fa-ellipsis-h"></i></button> </div> </div>
+            <div id="search-area"> <input type="search" id="user-search-input" placeholder="Search users to chat"> </div>
+            <div id="main-list-area"> <div id="chats-list"></div> <div id="search-results-list"></div> </div>
+        </div>
+        <div id="chat-view" class="view">
+            <div class="app-header"> <div class="header-left"> <button id="chat-back-btn" class="header-icon back-arrow"><i class="fas fa-arrow-left"></i></button> <div class="chat-header-avatar" id="chat-partner-avatar-header"></div> </div> <div class="header-title-group"> <span class="chat-partner-name" id="chat-partner-name-header">User</span> <span class="chat-partner-status" id="chat-partner-status-header">Offline</span> </div> <div class="header-right"> <button id="chat-options-btn" class="header-icon"><i class="fas fa-ellipsis-v"></i></button> </div> </div>
+            <div id="messages-area"></div>
+            <div id="input-area"> <input type="text" id="message-input" placeholder="Message..."> <button id="send-button" title="Send"><i class="fas fa-paper-plane"></i></button> </div>
+            <div id="blocked-chat-overlay" class="blocked-chat-overlay" style="display:none;"> <span id="blocked-message-text">You have blocked this user.</span> <button id="unblock-user-from-chat-btn">Unblock</button> </div>
+        </div>
+        <div id="profile-settings-view" class="view">
+            <div class="app-header"> <div class="header-left"> <span style="width:40px;"></span> </div> <div class="header-title">Profile and Settings</div> <div class="header-right"> <button id="profile-settings-more-btn" class="header-icon more-options"><i class="fas fa-ellipsis-h"></i></button> </div> </div>
+            <div class="view-content"> <div class="profile-card"> <div class="profile-avatar-lg" id="settings-avatar-display">🧑</div> <div class="profile-name-lg" id="settings-profile-name">User Name</div> <div class="profile-email-sm" id="settings-profile-email">user@example.com</div> <button class="edit-profile-btn" id="go-to-edit-profile-btn">Edit Profile</button> </div> <div class="settings-list"> <div class="settings-item" data-setting="timezone"> <i class="item-icon fas fa-clock"></i> <span class="item-label">Timezone</span> <span class="item-value" id="setting-timezone-value">Not set</span> <i class="item-arrow fas fa-chevron-right"></i> </div> <div class="settings-item" data-setting="language"> <i class="item-icon fas fa-language"></i> <span class="item-label">Language</span> <span class="item-value" id="setting-language-value">English</span> <i class="item-arrow fas fa-chevron-right"></i> </div> <div class="settings-item" data-setting="fontsize"> <i class="item-icon fas fa-text-height"></i> <span class="item-label">Font Size</span> <span class="item-value" id="setting-fontsize-value">Default</span> <i class="item-arrow fas fa-chevron-right"></i> </div> <div class="settings-item" data-setting="darkmode"> <i class="item-icon fas fa-moon"></i> <span class="item-label">Dark Mode</span> <span class="item-value" id="setting-darkmode-value">Off</span> <i class="item-arrow fas fa-chevron-right"></i></div> <!-- Admin Panel Link --> <div class="settings-item" id="setting-logout"> <i class="item-icon fas fa-sign-out-alt" style="color:var(--danger-color);"></i> <span class="item-label" style="color:var(--danger-color);">Logout</span> <span class="item-value"></span> <i class="item-arrow fas fa-chevron-right"></i></div> </div> </div>
+        </div>
+        <div id="profile-edit-view" class="view">
+            <div class="app-header"> <div class="header-left"> <button id="edit-profile-back-btn" class="header-icon back-arrow"><i class="fas fa-arrow-left"></i></button> </div> <div class="header-title">Edit Profile</div> <div class="header-right"> <button id="save-profile-changes-btn" style="background:none; color:var(--highlight-color); font-weight:600; font-size:1em; padding-right:0;">Save</button> </div> </div>
+            <div class="view-content"> <div class="edit-avatar-section"> <div class="edit-avatar-display" id="edit-avatar-preview-main">🧑</div> <div class="avatar-actions"> <button id="edit-avatar-btn">Edit Avatar</button> <button id="delete-avatar-btn" class="delete-avatar">Delete Avatar</button> </div> </div> <div class="avatar-picker-container" id="emoji-picker-section-edit" style="display:none;"> <div id="emoji-grid-edit"></div> </div> <div class="form-section-title">Personal Info</div> <div class="profile-form-group"> <label for="profile-email-display-edit">Email</label> <input type="email" id="profile-email-display-edit" readonly> </div> <div class="profile-form-group"> <label for="profile-name-input-edit">Name *</label> <input type="text" id="profile-name-input-edit" placeholder="Your full name"> </div> <div class="form-section-title">Security</div> <div class="profile-form-group input-group"> <label for="profile-password-input-edit">Password</label> <input type="password" id="profile-password-input-edit" placeholder="New password (optional)"> <span class="password-toggle"><i class="fas fa-eye"></i></span> </div> <div class="profile-form-group"> <label for="profile-public-id-input-edit">Public UserID</label> <input type="text" id="profile-public-id-input-edit" placeholder="e.g., username123"> <small>Letters, numbers, min 5 chars. Unique.</small> </div> <div class="form-section-title">Preferences</div> <div class="profile-form-group"> <label for="profile-location-input-edit">Location</label> <input type="text" id="profile-location-input-edit" placeholder="e.g., Berlin, DE"> </div> <div class="profile-form-group"> <label for="profile-timezone-input-edit">Timezone</label> <input type="text" id="profile-timezone-input-edit" placeholder="e.g., UTC+01:00"> </div> <div class="profile-form-group"> <label for="profile-language-input-edit">Language</label> <input type="text" id="profile-language-input-edit" placeholder="e.g., English"> </div> <div id="profile-edit-status-msg" style="text-align:center; margin-top:15px; font-size:0.9em;"></div> </div>
+        </div>
 
-        <!-- Auth View (No Changes) -->
-        <div id="auth-container" class="view active"> <div class="auth-forms-wrapper"></div> </div>
+        <!-- ADMIN PANEL VIEW -->
+        <div id="admin-panel-view" class="view">
+            <div class="app-header"> <div class="header-left"> <button id="admin-panel-back-btn" class="header-icon back-arrow"><i class="fas fa-arrow-left"></i></button> </div> <div class="header-title">Admin Panel</div> <div class="header-right"> <span style="width:40px;"></span> </div> </div>
+            <div class="view-content" style="overflow-y: auto; padding: 15px;">
+                <div class="admin-section"> <h3>User Management</h3> <input type="search" id="admin-user-search-input" placeholder="Search users (name, email, UID)"> <div id="admin-user-list"> <!-- User items --> </div> </div>
+                <div class="admin-section" style="margin-top: 20px;"> <h3>Send Global Notification</h3> <textarea id="admin-notification-message" placeholder="Enter notification message for all users..." style="width: 100%; min-height: 80px; padding: 10px; margin-bottom: 10px; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--input-bg); color: var(--primary-text-color);"></textarea> <button id="admin-send-notification-btn" class="edit-profile-btn" style="width:auto; background-color: var(--highlight-color);">Send Notification</button> <div id="admin-notification-status" style="margin-top: 10px; font-size: 0.9em;"></div> </div>
+            </div>
+        </div>
+        <!-- END ADMIN PANEL VIEW -->
 
-        <!-- Chat List View (Header Modified) -->
-        <div id="chat-list-container" class="view">
-            <div class="app-header">
-                <button id="profile-button" class="header-icon"><i class="fas fa-user-circle"></i></button>
-                <h2>Chats</h2>
-                <div class="header-icon-group">
-                    <button id="share-app-button" class="header-icon" title="Share App"><i class="fas fa-share-alt"></i></button>
-                    <button id="logout-button-list" class="header-icon"><i class="fas fa-sign-out-alt"></i></button>
+        <nav class="bottom-nav" id="bottom-navigation-bar"> <div class="nav-item active" data-view-id="chat-list-view"> <i class="fas fa-comments"></i> <span>Chats</span> </div> <div class="nav-item fab-placeholder"></div> <div class="nav-item" data-view-id="profile-settings-view"> <i class="fas fa-user-cog"></i> <span>Profile</span> </div> </nav>
+        <div class="fab-button" id="fab-new-chat-btn"> <i class="fas fa-plus"></i> </div>
+
+        <div id="settings-modal-overlay" class="settings-modal-overlay"> <div class="settings-modal"> <h3 id="settings-modal-title">Setting</h3> <div id="settings-modal-content"> </div> <div class="modal-actions"> <button type="button" class="cancel-btn" id="settings-modal-cancel-btn">Cancel</button> <button type="button" class="save-btn" id="settings-modal-save-btn">Save</button> </div> </div> </div>
+        <div id="message-context-menu"></div> <div id="chat-options-menu"></div> <div id="menu-overlay" class="menu-overlay"></div>
+        <div id="loader-overlay" class="loader-overlay"><div class="loader"></div></div>
+        <div id="share-popup-overlay" class="popup-overlay"> <div id="share-popup-modal" class="popup-modal"> <button id="close-share-popup-button" class="close-button" aria-label="Close">×</button> <h3>Share App Link</h3> <div id="share-link-display" class="link-display" aria-readonly="true"></div> <button id="copy-link-button"><i class="fas fa-copy"></i> Copy Link</button> <div id="copy-status-message" class="popup-copy-status"></div> </div> </div>
+
+        <!-- ADMIN EDIT USER MODAL -->
+        <div id="admin-edit-user-modal-overlay">
+            <div id="admin-edit-user-modal">
+                <h3 id="admin-edit-user-modal-title">Edit User</h3>
+                <input type="hidden" id="admin-edit-user-uid">
+                <div class="form-group">
+                    <label for="admin-edit-display-name">Display Name</label>
+                    <input type="text" id="admin-edit-display-name">
+                </div>
+                <div class="form-group">
+                    <label for="admin-edit-email">Email (Display Only)</label>
+                    <input type="email" id="admin-edit-email" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="admin-edit-public-id">Public UserID</label>
+                    <input type="text" id="admin-edit-public-id">
+                </div>
+                <div class="form-group">
+                    <label for="admin-edit-avatar-emoji">Avatar Emoji</label>
+                    <input type="text" id="admin-edit-avatar-emoji" maxlength="2">
+                </div>
+                <div class="form-group">
+                    <label for="admin-edit-location">Location</label>
+                    <input type="text" id="admin-edit-location">
+                </div>
+                 <div class="form-group">
+                    <label for="admin-edit-timezone">Timezone (Setting)</label>
+                    <input type="text" id="admin-edit-timezone">
+                </div>
+                 <div class="form-group">
+                    <label for="admin-edit-language">Language (Setting)</label>
+                    <input type="text" id="admin-edit-language">
+                </div>
+                <div id="admin-edit-user-modal-status"></div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" id="admin-edit-user-cancel-btn">Cancel</button>
+                    <button type="button" class="save-btn" id="admin-edit-user-save-btn">Save Changes</button>
                 </div>
             </div>
-            <div id="search-area"> <input type="search" id="user-search-input" placeholder="Search users to start chat..."> </div>
-            <div id="main-list-area"> <div id="chats-list"> <p class="list-placeholder">No active chats. Search for users to start chatting.</p> </div> <div id="search-results-list"> <p class="list-placeholder">Type to search users...</p> </div> </div>
         </div>
 
-        <!-- Chat View (No Changes) -->
-        <div id="chat-container" class="view"> <div class="app-header"> <button id="back-to-list-button" class="header-icon back-button"><i class="fas fa-arrow-left"></i></button> <h2 id="chat-with-user">Chat</h2> <span class="header-icon placeholder-icon" style="padding: 8px;"><i class="fas fa-arrow-left"></i></span> </div> <div id="messages-area"></div> <div id="input-area"> <input type="text" id="message-input" placeholder="Type a message..."> <button id="send-button"><i class="fas fa-paper-plane"></i></button> </div> </div>
-
-        <!-- Profile Edit View (No Changes) -->
-        <div id="profile-edit-container" class="view"> <div class="app-header"> <button id="back-to-list-from-profile-button" class="header-icon back-button"><i class="fas fa-arrow-left"></i></button> <h2>My Profile</h2> <button id="logout-button-profile" class="header-icon"><i class="fas fa-sign-out-alt"></i></button> </div> <div class="profile-content"> <div class="profile-info"> <p><strong>Email:</strong> <span id="profile-email"></span></p> <p style="font-size: 0.8em; color: var(--secondary-color)">Internal UID: <span id="profile-uid"></span></p> </div> <div class="profile-form"> <div class="profile-form-group"> <label for="profile-display-name">Display Name:</label> <input type="text" id="profile-display-name" placeholder="Enter your display name"> </div> <div class="profile-form-group"> <label for="profile-public-id-input">Public UserID:</label> <input type="text" id="profile-public-id-input" placeholder="e.g., username123"> <small style="font-size:0.8em; color: var(--secondary-color); display:block; margin-top: 5px;">Letters, numbers, min 5 chars. Unique.</small> </div> <button id="save-profile-button">Save Changes</button> <div id="profile-status"></div> </div> </div> </div>
-
-        <!-- Context Menu, Overlay, Loader (No Changes) -->
-        <div id="message-context-menu"></div> <div id="menu-overlay" class="menu-overlay"></div>
-        <div id="loader-overlay" class="loader-overlay"><div class="loader"></div></div>
-
-
-        <!-- *** NEW: Share Popup HTML *** -->
-        <div id="share-popup-overlay" class="popup-overlay">
-            <div id="share-popup-modal" class="popup-modal">
-                <button id="close-share-popup-button" class="close-button" aria-label="Close">×</button>
-                <h3>Share App Link</h3>
-                <div id="share-link-display" class="link-display" aria-readonly="true"></div>
-                <button id="copy-link-button"><i class="fas fa-copy"></i> Copy Link</button>
-                <div id="copy-status-message" class="popup-copy-status"></div> <!-- For feedback -->
-            </div>
-        </div>
-        <!-- *** END: Share Popup HTML *** -->
-
-    </div><!-- End #app-container -->
-
+    </div>
 
     <script type="module">
-        // Firebase Imports (Same as before)
+        // Firebase Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-        import { getDatabase, ref as dbRef, onValue, push, serverTimestamp, set, update, query, orderByChild, equalTo, get, off, remove } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+        import { getDatabase, ref as dbRef, onValue, push, serverTimestamp, set, update, query, orderByChild, equalTo, get, off, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
-        // Firebase Config (Same as before)
-        const firebaseConfig = { /* --- PASTE YOUR CONFIG HERE --- */ apiKey: "AIzaSyCFihnVTG6qLoREqmwIo1dPTVazUX6S_ec", authDomain: "chatting-app-5b3fb.firebaseapp.com", databaseURL: "https://chatting-app-5b3fb-default-rtdb.firebaseio.com", projectId: "chatting-app-5b3fb", storageBucket: "chatting-app-5b3fb.appspot.com", messagingSenderId: "44665165613", appId: "1:44665165613:web:cb978ce54b4216c776e5a4", measurementId: "G-TKFLVWKZ6H" };
+        // Firebase Config
+        const firebaseConfig = { apiKey: "AIzaSyCFihnVTG6qLoREqmwIo1dPTVazUX6S_ec", authDomain: "chatting-app-5b3fb.firebaseapp.com", databaseURL: "https://chatting-app-5b3fb-default-rtdb.firebaseio.com", projectId: "chatting-app-5b3fb", storageBucket: "chatting-app-5b3fb.appspot.com", messagingSenderId: "44665165613", appId: "1:44665165613:web:cb978ce54b4216c776e5a4", measurementId: "G-TKFLVWKZ6H" };
 
-        // Initialize Firebase (Same as before)
-        const app = initializeApp(firebaseConfig); const database = getDatabase(app); const auth = getAuth(app); const googleProvider = new GoogleAuthProvider();
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+        googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-        // --- DOM Element References (Added Share Popup Elements) ---
+        // DOM Element References
+        // ... (Keep all existing DOM refs)
         const views = document.querySelectorAll('.view');
+        const initialLoadingView = document.getElementById('initial-loading-view');
         const authContainer = document.getElementById('auth-container');
         const authFormsWrapper = authContainer.querySelector('.auth-forms-wrapper');
-        const profileButton = document.getElementById('profile-button');
-        const logoutButtonList = document.getElementById('logout-button-list');
-        const logoutButtonProfile = document.getElementById('logout-button-profile');
-        const shareAppButton = document.getElementById('share-app-button'); // Share trigger button
+        const chatListProfileBtn = document.getElementById('chat-list-profile-btn');
+        const chatListMoreBtn = document.getElementById('chat-list-more-btn');
         const userSearchInput = document.getElementById('user-search-input');
         const chatsListDiv = document.getElementById('chats-list');
         const searchResultsListDiv = document.getElementById('search-results-list');
-        const backToListButton = document.getElementById('back-to-list-button');
-        const chatWithUserTitle = document.getElementById('chat-with-user');
+        const chatBackBtn = document.getElementById('chat-back-btn');
+        const chatPartnerAvatarHeader = document.getElementById('chat-partner-avatar-header');
+        const chatPartnerNameHeader = document.getElementById('chat-partner-name-header');
+        const chatPartnerStatusHeader = document.getElementById('chat-partner-status-header');
+        const chatOptionsBtn = document.getElementById('chat-options-btn');
         const messagesArea = document.getElementById('messages-area');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
-        const backToListFromProfileButton = document.getElementById('back-to-list-from-profile-button');
-        const profileEmail = document.getElementById('profile-email');
-        const profileUid = document.getElementById('profile-uid');
-        const profileDisplayNameInput = document.getElementById('profile-display-name');
-        const profilePublicIdInput = document.getElementById('profile-public-id-input');
-        const saveProfileButton = document.getElementById('save-profile-button');
-        const profileStatus = document.getElementById('profile-status');
+        const inputArea = document.getElementById('input-area');
+        const blockedChatOverlay = document.getElementById('blocked-chat-overlay');
+        const unblockUserFromChatBtn = document.getElementById('unblock-user-from-chat-btn');
+        const settingsAvatarDisplay = document.getElementById('settings-avatar-display');
+        const settingsProfileName = document.getElementById('settings-profile-name');
+        const settingsProfileEmail = document.getElementById('settings-profile-email');
+        const goToEditProfileBtn = document.getElementById('go-to-edit-profile-btn');
+        const settingLogoutBtn = document.getElementById('setting-logout');
+        const editProfileBackBtn = document.getElementById('edit-profile-back-btn');
+        const saveProfileChangesBtn = document.getElementById('save-profile-changes-btn');
+        const editAvatarPreviewMain = document.getElementById('edit-avatar-preview-main');
+        const editAvatarBtn = document.getElementById('edit-avatar-btn');
+        const deleteAvatarBtn = document.getElementById('delete-avatar-btn');
+        const emojiPickerSectionEdit = document.getElementById('emoji-picker-section-edit');
+        const emojiGridEdit = document.getElementById('emoji-grid-edit');
+        const profileEmailDisplayEdit = document.getElementById('profile-email-display-edit');
+        const profileNameInputEdit = document.getElementById('profile-name-input-edit');
+        const profilePasswordInputEdit = document.getElementById('profile-password-input-edit');
+        const profilePublicIdInputEdit = document.getElementById('profile-public-id-input-edit');
+        const profileLocationInputEdit = document.getElementById('profile-location-input-edit');
+        const profileTimezoneInputEdit = document.getElementById('profile-timezone-input-edit');
+        const profileLanguageInputEdit = document.getElementById('profile-language-input-edit');
+        const profileEditStatusMsg = document.getElementById('profile-edit-status-msg');
+        const bottomNavigationBar = document.getElementById('bottom-navigation-bar');
+        const bottomNavItems = bottomNavigationBar.querySelectorAll('.nav-item:not(.fab-placeholder)');
+        const fabNewChatBtn = document.getElementById('fab-new-chat-btn');
         const messageContextMenu = document.getElementById('message-context-menu');
-        const menuOverlay = document.getElementById('menu-overlay'); // For context menu
+        const chatOptionsMenu = document.getElementById('chat-options-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
         const loaderOverlay = document.getElementById('loader-overlay');
-
-        // *** NEW: Share Popup Element References ***
         const sharePopupOverlay = document.getElementById('share-popup-overlay');
-        const sharePopupModal = document.getElementById('share-popup-modal');
         const shareLinkDisplay = document.getElementById('share-link-display');
         const copyLinkButton = document.getElementById('copy-link-button');
         const closeSharePopupButton = document.getElementById('close-share-popup-button');
         const copyStatusMessage = document.getElementById('copy-status-message');
-        let copyTimeout = null; // To manage the "Copied!" message timeout
+        const settingsModalOverlay = document.getElementById('settings-modal-overlay');
+        const settingsModalTitle = document.getElementById('settings-modal-title');
+        const settingsModalContent = document.getElementById('settings-modal-content');
+        const settingsModalSaveBtn = document.getElementById('settings-modal-save-btn');
+        const settingsModalCancelBtn = document.getElementById('settings-modal-cancel-btn');
+
+        // Admin Panel Elements
+        const adminPanelView = document.getElementById('admin-panel-view');
+        const adminPanelBackBtn = document.getElementById('admin-panel-back-btn');
+        const adminUserSearchInput = document.getElementById('admin-user-search-input');
+        const adminUserListDiv = document.getElementById('admin-user-list');
+        const adminNotificationMessageInput = document.getElementById('admin-notification-message');
+        const adminSendNotificationBtn = document.getElementById('admin-send-notification-btn');
+        const adminNotificationStatusDiv = document.getElementById('admin-notification-status');
+
+        // Admin Edit User Modal Elements
+        const adminEditUserModalOverlay = document.getElementById('admin-edit-user-modal-overlay');
+        const adminEditUserModalTitle = document.getElementById('admin-edit-user-modal-title');
+        const adminEditUserUidInput = document.getElementById('admin-edit-user-uid');
+        const adminEditDisplayNameInput = document.getElementById('admin-edit-display-name');
+        const adminEditEmailInput = document.getElementById('admin-edit-email');
+        const adminEditPublicIdInput = document.getElementById('admin-edit-public-id');
+        const adminEditAvatarEmojiInput = document.getElementById('admin-edit-avatar-emoji');
+        const adminEditLocationInput = document.getElementById('admin-edit-location');
+        const adminEditTimezoneInput = document.getElementById('admin-edit-timezone');
+        const adminEditLanguageInput = document.getElementById('admin-edit-language');
+        const adminEditUserModalStatus = document.getElementById('admin-edit-user-modal-status');
+        const adminEditUserSaveBtn = document.getElementById('admin-edit-user-save-btn');
+        const adminEditUserCancelBtn = document.getElementById('admin-edit-user-cancel-btn');
 
 
-        // --- State Variables (Same as before) ---
-        let currentUser = null; let currentChatId = null; let currentChatPartner = null; let messageListenerUnsubscribe = null; let myChatsListenerUnsubscribe = null; let allUsersCache = {}; let authMode = 'login'; let searchDebounceTimer = null; let longPressTimer = null; let longPressTargetInfo = null; const LONG_PRESS_DURATION = 500;
-
-        // --- Utility Functions (showLoader, hideLoader, showView - Same as before) ---
-        function showLoader() { loaderOverlay.style.display = 'flex'; }
-        function hideLoader() { loaderOverlay.style.display = 'none'; }
-        function showView(viewId) { console.log(`--- Request to show view: ${viewId} ---`); const targetView = document.getElementById(viewId); if (!targetView) { console.error(`Target view with ID '${viewId}' not found!`); return; } views.forEach(view => { if (view.classList.contains('active')) { console.log(`Deactivating view: ${view.id}`); view.classList.remove('active'); } }); console.log(`Activating view: ${targetView.id}`); targetView.classList.add('active'); console.log(`--- View switch complete for: ${viewId} ---`); }
-
-        // --- Auth UI Functions (renderAuthUI, addAuthEventListeners, setAuthStatus - Same as before) ---
-        function renderAuthUI() { /* ... (same as before) ... */ if (!authFormsWrapper) { console.error("Auth forms wrapper not found!"); return; } let html = ''; if (authMode === 'login') { html = `<h2 style="color: var(--dark-text);">Login</h2><div class="auth-form"> <input type="email" id="email-input" placeholder="Email" required> <input type="password" id="password-input" placeholder="Password" required> <p class="forgot-password-link"><button type="button" id="forgot-password-button">Forgot Password?</button></p> <button id="signin-button">Sign In</button> <div id="auth-status"></div> <p class="auth-switch">Don't have an account? <button type="button" id="switch-to-signup">Sign Up</button></p> </div><div class="auth-form"> <h3 style="color: var(--secondary-color);">Or</h3> <button id="google-signin-button"><i class="fab fa-google"></i> Sign In with Google</button> </div>`; } else { html = `<h2 style="color: var(--dark-text);">Sign Up</h2><div class="auth-form"> <input type="email" id="email-input" placeholder="Email" required> <input type="password" id="password-input" placeholder="Password (min. 6 characters)" required> <input type="text" id="display-name-input" placeholder="Your Name (e.g., John Doe)"> <button id="signup-button">Sign Up</button> <div id="auth-status"></div> <p class="auth-switch">Already have an account? <button type="button" id="switch-to-login">Log In</button></p> </div>`; } authFormsWrapper.innerHTML = html; addAuthEventListeners(); }
-        function addAuthEventListeners() { /* ... (same as before) ... */ const emailInput = authFormsWrapper.querySelector('#email-input'); const passwordInput = authFormsWrapper.querySelector('#password-input'); if (authMode === 'login') { authFormsWrapper.querySelector('#signin-button')?.addEventListener('click', handleSignIn); authFormsWrapper.querySelector('#google-signin-button')?.addEventListener('click', handleGoogleSignIn); authFormsWrapper.querySelector('#switch-to-signup')?.addEventListener('click', () => { authMode = 'signup'; renderAuthUI(); }); authFormsWrapper.querySelector('#forgot-password-button')?.addEventListener('click', handleForgotPassword); } else { authFormsWrapper.querySelector('#signup-button')?.addEventListener('click', handleSignUp); authFormsWrapper.querySelector('#switch-to-login')?.addEventListener('click', () => { authMode = 'login'; renderAuthUI(); }); } emailInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') passwordInput?.focus(); }); passwordInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { if (authMode === 'login') authFormsWrapper.querySelector('#signin-button')?.click(); else authFormsWrapper.querySelector('#signup-button')?.click(); } }); authFormsWrapper.querySelector('#display-name-input')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { authFormsWrapper.querySelector('#signup-button')?.click(); } }); }
-        function setAuthStatus(message, isError = false) { /* ... (same as before) ... */ const authStatusEl = authFormsWrapper?.querySelector('#auth-status'); if (authStatusEl) { authStatusEl.textContent = message; authStatusEl.className = isError ? 'status-error' : 'status-info'; } }
-
-        // --- Auth Actions (handleForgotPassword, onAuthStateChanged, etc. - Same as before) ---
-        async function handleForgotPassword() { /* ... (same as before) ... */ const emailInput = authFormsWrapper.querySelector('#email-input'); if (!emailInput) { alert("Email field not found."); return; } const email = emailInput.value.trim(); if (!email) { setAuthStatus("Please enter your email address to reset password.", true); emailInput.focus(); return; } setAuthStatus("Sending password reset email...", false); showLoader(); try { await sendPasswordResetEmail(auth, email); hideLoader(); setAuthStatus("Password reset email sent! Check your inbox.", false); } catch (error) { hideLoader(); console.error("Forgot password error:", error); setAuthStatus(`Error: ${error.message}`, true); } }
-        onAuthStateChanged(auth, (user) => { /* ... (same as before) ... */ setAuthStatus(''); detachMyChatsListener(); detachMessageListener(); if (user) { console.log("onAuthStateChanged: User is LOGGED IN", user.uid); const userRef = dbRef(database, 'users/' + user.uid); get(userRef).then(snapshot => { if (snapshot.exists()) { currentUser = snapshot.val(); console.log("User profile fetched:", currentUser); ensurePublicIdExistsAndUpdateIfNeeded(currentUser).then(() => { attachMyChatsListener(); showView('chat-list-container'); }); } else { console.warn("User authenticated but profile data not found in DB. Attempting to create."); const initialDisplayName = user.displayName || user.email.split('@')[0]; const fallbackUser = { uid: user.uid, email: user.email, displayName: initialDisplayName }; ensureUserProfileExists(user, fallbackUser, true); } }).catch(error => { console.error("Error fetching user profile data:", error); setAuthStatus("Could not load user profile. Please try again.", true); handleSignOut(); }); } else { console.log("onAuthStateChanged: User is LOGGED OUT"); currentUser = null; allUsersCache = {}; authMode = 'login'; renderAuthUI(); showView('auth-container'); } });
-        function generateBasePublicID(nameOrEmail) { /* ... (same as before) ... */ const base = nameOrEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase().substring(0, 10) || 'user'; const randomDigits = Math.floor(1000 + Math.random() * 9000); return `${base}${randomDigits}`; }
-        async function ensurePublicIdExistsAndUpdateIfNeeded(userData) { /* ... (same as before) ... */ if (!userData || !userData.uid) { console.error("Cannot ensure public ID: Invalid user data provided."); return; } const needsPublicId = !userData.publicUserID || userData.publicUserID.trim() === ''; if (needsPublicId) { console.log(`PublicUserID missing or empty for ${userData.uid}. Generating...`); const publicUserID = generateBasePublicID(userData.displayName || userData.email); const userRef = dbRef(database, 'users/' + userData.uid); try { await update(userRef, { publicUserID: publicUserID }); console.log(`Successfully added publicUserID '${publicUserID}' for ${userData.uid}`); if (currentUser && currentUser.uid === userData.uid) { currentUser.publicUserID = publicUserID; } } catch (error) { console.error(`Failed to update publicUserID for ${userData.uid}:`, error); } } else { console.log(`PublicUserID already exists for ${userData.uid}: ${userData.publicUserID}`); } }
-        async function ensureUserProfileExists(authUser, userDataFromDb = null, forceCreate = false) { /* ... (same as before) ... */ const userRef = dbRef(database, 'users/' + authUser.uid); try { const snapshot = userDataFromDb ? { exists: () => true, val: () => userDataFromDb } : await get(userRef); if (!snapshot.exists() || forceCreate) { console.log(`Creating profile for ${authUser.uid}`); const signupDisplayName = authFormsWrapper?.querySelector('#display-name-input')?.value.trim(); const initialDisplayName = signupDisplayName || authUser.displayName || authUser.email.split('@')[0]; const publicUserID = generateBasePublicID(initialDisplayName || authUser.email); const newUserProfile = { uid: authUser.uid, email: authUser.email, displayName: initialDisplayName, publicUserID: publicUserID, createdAt: serverTimestamp() }; await set(userRef, newUserProfile); console.log("User profile CREATED in DB:", newUserProfile); if (authUser.displayName !== initialDisplayName && auth.currentUser) { try { await updateProfile(auth.currentUser, { displayName: initialDisplayName }); } catch (err) { console.warn("Could not update Auth profile display name:", err); } } if (!currentUser || forceCreate) { currentUser = newUserProfile; attachMyChatsListener(); showView('chat-list-container'); } } else { const dbData = snapshot.val(); if (!currentUser || currentUser.uid !== dbData.uid) currentUser = dbData; if (authUser.displayName && dbData.displayName !== authUser.displayName) { console.log("Updating DB display name from Auth provider..."); await update(userRef, { displayName: authUser.displayName }); if(currentUser) currentUser.displayName = authUser.displayName; } await ensurePublicIdExistsAndUpdateIfNeeded(dbData); } } catch (error) { console.error("Error ensuring user profile exists:", error); setAuthStatus("Failed to initialize user profile.", true); } }
-        function handleSignUp() { /* ... (same as before) ... */ const emailInput = authFormsWrapper?.querySelector('#email-input'); const passwordInput = authFormsWrapper?.querySelector('#password-input'); if (!emailInput || !passwordInput) return; const email = emailInput.value; const password = passwordInput.value; setAuthStatus(''); if (!email || !password) { setAuthStatus('Please enter email and password.', true); return; } if (password.length < 6) { setAuthStatus('Password must be at least 6 characters long.', true); return; } setAuthStatus('Signing up...'); createUserWithEmailAndPassword(auth, email, password).then(() => { console.log("Sign up successful via email"); setAuthStatus('Account created! Setting up profile...', false); }).catch((error) => { console.error("Sign up error:", error); if (error.code === 'auth/email-already-in-use') { setAuthStatus('This email is already registered. Please Log In.', true); authMode = 'login'; renderAuthUI(); authFormsWrapper.querySelector('#email-input').value = email; } else { setAuthStatus(`Sign up failed: ${error.message}`, true); } }); }
-        function handleSignIn() { /* ... (same as before) ... */ const emailInput = authFormsWrapper?.querySelector('#email-input'); const passwordInput = authFormsWrapper?.querySelector('#password-input'); if (!emailInput || !passwordInput) return; const email = emailInput.value; const password = passwordInput.value; setAuthStatus(''); if (!email || !password) { setAuthStatus('Please enter email and password.', true); return; } setAuthStatus('Logging in...'); signInWithEmailAndPassword(auth, email, password).then(() => { console.log("Sign in successful via email"); }).catch((error) => { console.error("Sign in error:", error); if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') { setAuthStatus('Invalid email or password.', true); } else { setAuthStatus(`Sign in failed: ${error.message}`, true); } }); }
-        function handleGoogleSignIn() { /* ... (same as before) ... */ setAuthStatus('Connecting to Google...'); signInWithPopup(auth, googleProvider).then(() => { console.log("Google Sign in successful"); }).catch((error) => { console.error("Google Sign in error:", error); if (error.code === 'auth/popup-closed-by-user') { setAuthStatus('Google Sign in cancelled.', false); } else if (error.code === 'auth/network-request-failed') { setAuthStatus('Network error. Please check connection.', true); } else { setAuthStatus(`Google Sign in failed: ${error.message}`, true); } }); }
-        const handleSignOut = () => { /* ... (same as before) ... */ console.log("Signing out..."); detachMyChatsListener(); detachMessageListener(); hideContextMenu(); hideSharePopup(); /* Hide share popup on logout too */ signOut(auth).catch((error) => { alert(`Sign out failed: ${error.message}`); }); };
-
-        // --- Event Listeners for Logout (Same as before) ---
-        logoutButtonList.addEventListener('click', handleSignOut);
-        logoutButtonProfile.addEventListener('click', handleSignOut);
-
-        // --- Chat List Functions (attachMyChatsListener, etc. - Same as before) ---
-        function attachMyChatsListener() { /* ... (same as before) ... */ if (!currentUser) return; detachMyChatsListener(); const myChatsRef = dbRef(database, `users/${currentUser.uid}/chats`); const chatsQuery = query(myChatsRef, orderByChild('lastTimestamp')); console.log(`Attaching listener to my chats: users/${currentUser.uid}/chats`); myChatsListenerUnsubscribe = onValue(chatsQuery, (snapshot) => { const chatsData = []; if (snapshot.exists()) { snapshot.forEach(childSnapshot => { chatsData.push({ chatId: childSnapshot.key, ...childSnapshot.val() }); }); chatsData.sort((a, b) => b.lastTimestamp - a.lastTimestamp); } renderChatList(chatsData); }, (error) => { console.error("Error fetching my chats:", error); chatsListDiv.innerHTML = '<p class="list-placeholder" style="color:red;">Could not load chats.</p>'; }); }
-        function detachMyChatsListener() { /* ... (same as before) ... */ if (myChatsListenerUnsubscribe && currentUser) { const myChatsRef = dbRef(database, `users/${currentUser.uid}/chats`); off(myChatsRef, 'value', myChatsListenerUnsubscribe); myChatsListenerUnsubscribe = null; console.log("Detached my chats listener."); } }
-        function renderChatList(chats) { /* ... (same as before) ... */ chatsListDiv.innerHTML = ''; if (chats.length === 0) { chatsListDiv.innerHTML = '<p class="list-placeholder">No active chats. Search for users to start chatting.</p>'; return; } chats.forEach(chatData => { const partnerUid = chatData.partnerUid; if (!partnerUid) return; const cachedPartner = allUsersCache[partnerUid]; if (cachedPartner) { renderSingleChatListItem(cachedPartner, chatData); } else { const partnerRef = dbRef(database, `users/${partnerUid}`); get(partnerRef).then(partnerSnapshot => { if (partnerSnapshot.exists()) { const partnerData = partnerSnapshot.val(); allUsersCache[partnerUid] = partnerData; renderSingleChatListItem(partnerData, chatData); } }); } }); }
-        function renderSingleChatListItem(partnerData, chatData) { /* ... (same as before) ... */ if (!partnerData) return; const chatItem = document.createElement('div'); chatItem.classList.add('list-item'); const avatarDiv = document.createElement('div'); avatarDiv.classList.add('avatar'); const initial = partnerData.displayName ? partnerData.displayName.charAt(0).toUpperCase() : '?'; avatarDiv.textContent = initial; const itemInfoDiv = document.createElement('div'); itemInfoDiv.classList.add('list-item-info'); const nameSpan = document.createElement('span'); nameSpan.classList.add('name'); nameSpan.textContent = partnerData.displayName || 'No Name Set'; const detailSpan = document.createElement('span'); detailSpan.classList.add('detail'); detailSpan.textContent = `Chat started...`; itemInfoDiv.appendChild(nameSpan); itemInfoDiv.appendChild(detailSpan); chatItem.appendChild(avatarDiv); chatItem.appendChild(itemInfoDiv); chatItem.addEventListener('click', () => startChat(partnerData)); chatsListDiv.appendChild(chatItem); }
-
-        // --- User Search Functions (Same as before) ---
-        userSearchInput.addEventListener('input', (e) => { /* ... (same as before) ... */ const searchTerm = e.target.value.trim().toLowerCase(); clearTimeout(searchDebounceTimer); if (!searchTerm) { searchResultsListDiv.style.display = 'none'; searchResultsListDiv.innerHTML = '<p class="list-placeholder">Type to search users...</p>'; return; } searchResultsListDiv.style.display = 'block'; searchResultsListDiv.innerHTML = '<p class="list-placeholder">Searching...</p>'; searchDebounceTimer = setTimeout(() => { console.log("Debounced search for:", searchTerm); searchUsers(searchTerm); }, 300); });
-        async function searchUsers(searchTerm) { /* ... (same as before) ... */ if (!searchTerm) return; const usersRef = dbRef(database, 'users'); try { const snapshot = await get(usersRef); const results = []; if (snapshot.exists()) { snapshot.forEach(childSnapshot => { const user = childSnapshot.val(); if (user.uid !== currentUser?.uid && ((user.displayName && user.displayName.toLowerCase().includes(searchTerm)) || (user.publicUserID && user.publicUserID.toLowerCase().includes(searchTerm)))) { results.push(user); allUsersCache[user.uid] = user; } }); } renderSearchResults(results); } catch (error) { console.error("Error searching users:", error); searchResultsListDiv.innerHTML = '<p class="list-placeholder" style="color:red;">Error searching users.</p>'; } }
-        function renderSearchResults(results) { /* ... (same as before) ... */ searchResultsListDiv.innerHTML = ''; if (results.length === 0) { searchResultsListDiv.innerHTML = '<p class="list-placeholder">No users found matching your search.</p>'; return; } results.forEach(user => { const userItem = document.createElement('div'); userItem.classList.add('list-item'); const avatarDiv = document.createElement('div'); avatarDiv.classList.add('avatar'); const initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : '?'; avatarDiv.textContent = initial; const itemInfoDiv = document.createElement('div'); itemInfoDiv.classList.add('list-item-info'); const nameSpan = document.createElement('span'); nameSpan.classList.add('name'); nameSpan.textContent = user.displayName || 'No Name Set'; const detailSpan = document.createElement('span'); detailSpan.classList.add('detail'); detailSpan.textContent = `@${user.publicUserID || 'no_id'}`; itemInfoDiv.appendChild(nameSpan); itemInfoDiv.appendChild(detailSpan); userItem.appendChild(avatarDiv); userItem.appendChild(itemInfoDiv); userItem.addEventListener('click', () => { startChat(user); userSearchInput.value = ''; searchResultsListDiv.style.display = 'none'; searchResultsListDiv.innerHTML = ''; }); searchResultsListDiv.appendChild(userItem); }); }
-
-        // --- Chat Functions (generateChatId, startChat, attachMessageListener, etc. - Same as before) ---
-        function generateChatId(uid1, uid2) { /* ... (same as before) ... */ return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`; }
-        async function startChat(partnerData) { /* ... (same as before) ... */ if (!currentUser || !partnerData || !partnerData.uid) { console.error("Cannot start chat: Invalid user data provided for partner.", currentUser, partnerData); return; } currentChatPartner = partnerData; detachMessageListener(); currentChatId = generateChatId(currentUser.uid, partnerData.uid); console.log(`Starting chat with ${partnerData.displayName} (UID: ${partnerData.uid}), Chat ID: ${currentChatId}`); chatWithUserTitle.textContent = `${partnerData.displayName || partnerData.publicUserID}`; messagesArea.innerHTML = ''; messageInput.value = ''; const timestamp = serverTimestamp(); const chatMetaData = { partnerUid: partnerData.uid, partnerName: partnerData.displayName || '', lastTimestamp: timestamp }; const partnerChatMetaData = { partnerUid: currentUser.uid, partnerName: currentUser.displayName || '', lastTimestamp: timestamp }; const myChatEntryRef = dbRef(database, `users/${currentUser.uid}/chats/${currentChatId}`); const partnerChatEntryRef = dbRef(database, `users/${partnerData.uid}/chats/${currentChatId}`); try { await set(myChatEntryRef, chatMetaData); await set(partnerChatEntryRef, partnerChatMetaData); console.log("Chat metadata created/updated."); } catch (error) { console.error("Error creating/updating chat metadata:", error); } const messagesRef = dbRef(database, `chats/${currentChatId}/messages`); attachMessageListener(messagesRef); showView('chat-container'); }
-        function attachMessageListener(messagesRef) { /* ... (same as before) ... */ const messagesQuery = query(messagesRef, orderByChild('timestamp')); messageListenerUnsubscribe = onValue(messagesQuery, (snapshot) => { messagesArea.innerHTML = ''; let messageCount = 0; if (snapshot.exists()) { snapshot.forEach(childSnapshot => { const msgData = childSnapshot.val(); const msgId = childSnapshot.key; displayMessage(msgData, msgId); messageCount++; }); messagesArea.scrollTop = messagesArea.scrollHeight; } if (messageCount === 0) { messagesArea.innerHTML = '<p style="text-align:center; color:var(--placeholder-text); margin-top: 20px;">No messages yet. Say hi!</p>'; } }, (error) => { console.error("Error loading messages:", error); messagesArea.innerHTML = '<p style="text-align:center; color:red;">Could not load messages.</p>'; }); }
-        function detachMessageListener() { /* ... (same as before) ... */ if (messageListenerUnsubscribe && currentChatId) { const messagesRef = dbRef(database, `chats/${currentChatId}/messages`); off(messagesRef, 'value', messageListenerUnsubscribe); messageListenerUnsubscribe = null; console.log(`Detached message listener for chat: ${currentChatId}`); currentChatId = null; currentChatPartner = null; } else if (messageListenerUnsubscribe) { console.warn("Attempted to detach listener, but currentChatId was null."); messageListenerUnsubscribe = null; } }
-        function displayMessage(msgData, msgId) { /* ... (same as before) ... */ if (!currentUser || !msgData || !msgData.senderUid || !msgId) return; if (msgData.deletedFor && msgData.deletedFor[currentUser.uid]) { console.log(`Message ${msgId} is deleted for me. Skipping render.`); return; } const messageWrapper = document.createElement('div'); messageWrapper.classList.add('message-wrapper'); const messageDiv = document.createElement('div'); messageDiv.classList.add('message'); messageDiv.dataset.messageId = msgId; messageDiv.dataset.senderUid = msgData.senderUid; messageDiv.addEventListener('mousedown', handlePressStart); messageDiv.addEventListener('touchstart', handlePressStart, { passive: false }); messageDiv.addEventListener('mouseup', handlePressEnd); messageDiv.addEventListener('mouseleave', handlePressEnd); messageDiv.addEventListener('touchend', handlePressEnd); messageDiv.addEventListener('touchcancel', handlePressEnd); if (msgData.text) { const textSpan = document.createElement('span'); textSpan.classList.add('text'); textSpan.textContent = msgData.text; messageDiv.appendChild(textSpan); } const timeSpan = document.createElement('span'); timeSpan.classList.add('timestamp'); timeSpan.textContent = (msgData.timestamp && typeof msgData.timestamp === 'number') ? new Date(msgData.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'; if (msgData.senderUid === currentUser.uid) { messageWrapper.classList.add('sent'); } else { messageWrapper.classList.add('received'); } messageDiv.appendChild(timeSpan); messageWrapper.appendChild(messageDiv); messagesArea.appendChild(messageWrapper); messagesArea.scrollTop = messagesArea.scrollHeight; }
-
-        // --- Message Context Menu Functions (handlePressStart, etc. - Same as before) ---
-        function handlePressStart(e) { /* ... (same as before) ... */ const targetMessage = e.currentTarget; if (!targetMessage || !targetMessage.classList.contains('message')) return; if (e.type === 'touchstart' || (e.type === 'mousedown' && e.button === 2) ) { e.preventDefault(); } clearTimeout(longPressTimer); hideContextMenu(); const messageId = targetMessage.dataset.messageId; const senderUid = targetMessage.dataset.senderUid; if (!messageId || !senderUid) return; longPressTargetInfo = { element: targetMessage, messageId: messageId, isSent: senderUid === currentUser?.uid }; targetMessage.classList.add('pressed'); longPressTimer = setTimeout(() => { console.log(`Long press detected on message: ${messageId}`); showContextMenu(e.changedTouches ? e.changedTouches[0] : e); }, LONG_PRESS_DURATION); }
-        function handlePressEnd(e) { /* ... (same as before) ... */ clearTimeout(longPressTimer); if(longPressTargetInfo?.element) { longPressTargetInfo.element.classList.remove('pressed'); } }
-        function showContextMenu(positionEvent) { /* ... (same as before) ... */ if (!longPressTargetInfo) return; const { element, messageId, isSent } = longPressTargetInfo; messageContextMenu.innerHTML = ''; const deleteMeBtn = document.createElement('button'); deleteMeBtn.innerHTML = '<i class="fas fa-user-slash"></i> Delete for Me'; deleteMeBtn.onclick = () => handleContextMenuAction('delete_me'); messageContextMenu.appendChild(deleteMeBtn); if (isSent) { const deleteEveryoneBtn = document.createElement('button'); deleteEveryoneBtn.classList.add('delete-everyone'); deleteEveryoneBtn.innerHTML = '<i class="fas fa-users-slash"></i> Delete for Everyone'; deleteEveryoneBtn.onclick = () => handleContextMenuAction('delete_everyone'); messageContextMenu.appendChild(deleteEveryoneBtn); } const menuBuffer = 10; let top = positionEvent.pageY; let left = positionEvent.pageX; messageContextMenu.style.display = 'block'; const menuHeight = messageContextMenu.offsetHeight; const menuWidth = messageContextMenu.offsetWidth; if (left + menuWidth > window.innerWidth - menuBuffer) { left = window.innerWidth - menuWidth - menuBuffer; } if (top + menuHeight > window.innerHeight - menuBuffer) { top = window.innerHeight - menuHeight - menuBuffer; } if (left < menuBuffer) { left = menuBuffer; } if (top < menuBuffer) { top = menuBuffer; } messageContextMenu.style.top = `${top}px`; messageContextMenu.style.left = `${left}px`; menuOverlay.style.display = 'block'; }
-        function hideContextMenu() { /* ... (same as before) ... */ messageContextMenu.style.display = 'none'; menuOverlay.style.display = 'none'; if(longPressTargetInfo?.element) { longPressTargetInfo.element.classList.remove('pressed'); } longPressTargetInfo = null; }
-        menuOverlay.addEventListener('click', hideContextMenu); menuOverlay.addEventListener('touchstart', hideContextMenu, { passive: true });
-        function handleContextMenuAction(action) { /* ... (same as before) ... */ if (!longPressTargetInfo) return; const { messageId, isSent } = longPressTargetInfo; hideContextMenu(); if (action === 'delete_me') { handleDeleteForMeInternal(messageId); } else if (action === 'delete_everyone' && isSent) { handleDeleteForEveryoneInternal(messageId); } }
-        function handleDeleteForEveryoneInternal(messageId) { /* ... (same as before) ... */ if (!messageId || !currentChatId) return; if (confirm("Delete this message for everyone?")) { console.log(`Internal: Deleting message ${messageId} for everyone in chat ${currentChatId}`); const messageRef = dbRef(database, `chats/${currentChatId}/messages/${messageId}`); remove(messageRef).then(() => console.log("Message deleted successfully.")).catch(error => console.error("Error deleting message:", error)); } }
-        function handleDeleteForMeInternal(messageId) { /* ... (same as before) ... */ if (!messageId || !currentChatId || !currentUser) return; if (confirm("Delete this message only for you?")) { console.log(`Internal: Deleting message ${messageId} for me (UID: ${currentUser.uid}) in chat ${currentChatId}`); const messageRef = dbRef(database, `chats/${currentChatId}/messages/${messageId}/deletedFor/${currentUser.uid}`); set(messageRef, true).then(() => { console.log("Message marked deleted for me."); }).catch(error => console.error("Error marking message deleted:", error)); } }
-
-        // --- Send Message Functions (sendMessage, event listeners - Same as before) ---
-        function sendMessage() { /* ... (same as before) ... */ const messageText = messageInput.value.trim(); if (!messageText) return; if (!currentUser || !currentChatId || !currentChatPartner) { alert("Cannot send: No active chat or user."); return; } const messagesRef = dbRef(database, `chats/${currentChatId}/messages`); const newMessageRef = push(messagesRef); const timestamp = serverTimestamp(); let messageData = { senderUid: currentUser.uid, timestamp: timestamp, text: messageText }; set(newMessageRef, messageData).then(() => { messageInput.value = ''; messageInput.focus(); const myChatEntryRef = dbRef(database, `users/${currentUser.uid}/chats/${currentChatId}`); const partnerChatEntryRef = dbRef(database, `users/${currentChatPartner.uid}/chats/${currentChatId}`); const updateData = { lastTimestamp: timestamp }; update(myChatEntryRef, updateData).catch(e => console.error("Error updating my chat metadata:", e)); update(partnerChatEntryRef, updateData).catch(e => console.error("Error updating partner chat metadata:", e)); }).catch(error => { console.error("Error sending message: ", error); alert("Could not send message."); }); }
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-
-        // --- Profile Edit Functions (Event listeners, saveProfileButton logic - Same as before) ---
-        profileButton.addEventListener('click', () => { /* ... (same as before) ... */ if (!currentUser) return; const userRef = dbRef(database, 'users/' + currentUser.uid); get(userRef).then(snapshot => { if (snapshot.exists()) { currentUser = snapshot.val(); profileEmail.textContent = currentUser.email || 'N/A'; profileUid.textContent = currentUser.uid || 'N/A'; profileDisplayNameInput.value = currentUser.displayName || ''; profilePublicIdInput.value = currentUser.publicUserID || ''; profileStatus.textContent = ''; profileStatus.className = ''; showView('profile-edit-container'); } else { console.error("Could not load profile data to edit."); alert("Failed to load profile data."); } }); });
-        saveProfileButton.addEventListener('click', async () => { /* ... (same as before) ... */ if (!currentUser) return; const newDisplayName = profileDisplayNameInput.value.trim(); const newPublicId = profilePublicIdInput.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, ''); let changesMade = false; let updates = {}; if (newDisplayName && newDisplayName !== currentUser.displayName) { updates.displayName = newDisplayName; changesMade = true; } if (newPublicId && newPublicId !== currentUser.publicUserID) { if (newPublicId.length < 5) { profileStatus.textContent = 'Public UserID must be at least 5 characters.'; profileStatus.className = 'status-error'; return; } updates.publicUserID = newPublicId; changesMade = true; } if (!changesMade) { profileStatus.textContent = 'No changes detected.'; profileStatus.className = 'status-info'; return; } profileStatus.textContent = 'Saving...'; profileStatus.className = 'status-info'; showLoader(); const userDbRef = dbRef(database, 'users/' + currentUser.uid); try { await update(userDbRef, updates); if (updates.displayName && auth.currentUser) { await updateProfile(auth.currentUser, { displayName: updates.displayName }); } if(updates.displayName) currentUser.displayName = updates.displayName; if(updates.publicUserID) currentUser.publicUserID = updates.publicUserID; hideLoader(); profileStatus.textContent = 'Profile saved successfully!'; profileStatus.className = 'status-info'; console.log("Profile updated successfully:", updates); if (allUsersCache[currentUser.uid]) { if(updates.displayName) allUsersCache[currentUser.uid].displayName = updates.displayName; if(updates.publicUserID) allUsersCache[currentUser.uid].publicUserID = updates.publicUserID; } } catch (error) { hideLoader(); console.error("Error saving profile:", error); profileStatus.textContent = `Error saving: ${error.message}`; profileStatus.className = 'status-error'; } });
-
-        // --- Navigation Button Event Listeners (Same as before) ---
-        backToListButton.addEventListener('click', () => { detachMessageListener(); hideContextMenu(); showView('chat-list-container'); });
-        backToListFromProfileButton.addEventListener('click', () => { hideContextMenu(); showView('chat-list-container'); });
+        // State Variables
+        // ... (Keep all existing state variables)
+        let currentUser = null; let currentChatId = null; let currentChatPartner = null;
+        let messageListenerUnsubscribe = null; let myChatsListenerUnsubscribe = null;
+        let partnerStatusListenerUnsubscribe = null;
+        let allUsersCache = {}; let authMode = 'login'; let searchDebounceTimer = null;
+        let longPressTimer = null; let longPressTargetInfo = null; const LONG_PRESS_DURATION = 500;
+        let copyTimeout = null;
+        let selectedAvatarEmoji = null;
+        let currentSettingKey = null;
+        const ADMIN_EMAIL = "dilshadansari78606490@gmail.com";
+        let isAdminUser = false;
+        let allUsersForAdmin = [];
+        let globalNotificationListenerUnsubscribe = null;
+        const LAST_SEEN_NOTIFICATION_KEY = 'lastSeenGlobalNotificationTimestamp';
+        let userToEditByAdmin = null; // Stores the user object being edited by admin
 
 
-        // --- *** NEW: Share Popup Logic *** ---
+        const AVAILABLE_AVATAR_EMOJIS = ["😊", "😇", "😎", "🥳", "😢", "😭", "😠", "🤔", "😲", "🤯", "🤩", "🥰", "🧑", "👩", "👨", "👧", "👦", "🧒", "🧔", "👱‍♀️", "👱‍♂️", "👵", "👴", "🤖", "👻", "🦄", "🐼", "🦊", "🐱", "🐶"];
 
-        function showSharePopup() {
-            // --- *** YAHAN APNA LINK SET KAREN *** ---
-            // Abhi ke liye, yeh current page ka URL istemal karega.
-            // Baad mein aap ise Firebase se fetch karke set kar sakte hain.
-            // Example: const shareLink = await fetchShareLinkFromFirebase();
-            const shareLink ="https://www.mediafire.com/file/m6rj5fo2h3oq5xc/familychat.apk/file";
-            // --- ******************************** ---
+        // --- Utility Functions (showLoader, hideLoader, showView, applyUserPreferences - unchanged) ---
+        function showLoader() { if(loaderOverlay) loaderOverlay.style.display = 'flex'; }
+        function hideLoader() { if(loaderOverlay) loaderOverlay.style.display = 'none'; }
+        function showView(viewId) { console.log(`Attempting to show view: ${viewId}`); const targetView = document.getElementById(viewId); if (!targetView) { console.error(`View ${viewId} not found!`); return; } views.forEach(v => v.classList.remove('active')); targetView.classList.add('active'); const viewsWithBottomNav = ['chat-list-view', 'profile-settings-view']; const isBottomNavView = viewsWithBottomNav.includes(viewId); if (isBottomNavView) { if(bottomNavigationBar) bottomNavigationBar.classList.add('visible'); if(fabNewChatBtn && viewId === 'chat-list-view') fabNewChatBtn.classList.add('visible'); else if(fabNewChatBtn) fabNewChatBtn.classList.remove('visible'); targetView.style.paddingBottom = `var(--bottom-nav-height)`; targetView.style.height = `100%`; } else { if(bottomNavigationBar) bottomNavigationBar.classList.remove('visible'); if(fabNewChatBtn) fabNewChatBtn.classList.remove('visible'); targetView.style.paddingBottom = `0`; targetView.style.height = '100%'; } if (['chat-view', 'admin-panel-view', 'profile-edit-view', 'auth-container', 'initial-loading-view'].includes(viewId)) { targetView.style.height = '100%'; targetView.style.paddingBottom = `0`; } console.log(`View switched to: ${viewId}`); }
+        function applyUserPreferences(preferences) { if (!preferences) preferences = { darkMode: false, fontSize: 'default', language: 'English', timezone: '' }; document.body.classList.toggle('dark-mode', !!preferences.darkMode); const darkModeValueEl = document.getElementById('setting-darkmode-value'); if(darkModeValueEl) darkModeValueEl.textContent = preferences.darkMode ? 'On' : 'Off'; document.body.classList.remove('font-small', 'font-default', 'font-large'); const fontSize = preferences.fontSize || 'default'; document.body.classList.add(`font-${fontSize}`); const fontSizeValueEl = document.getElementById('setting-fontsize-value'); if(fontSizeValueEl) fontSizeValueEl.textContent = fontSize.charAt(0).toUpperCase() + fontSize.slice(1); const languageValueEl = document.getElementById('setting-language-value'); if(languageValueEl) languageValueEl.textContent = preferences.language || 'English'; const timezoneValueEl = document.getElementById('setting-timezone-value'); if(timezoneValueEl) timezoneValueEl.textContent = preferences.timezone || 'Not Set'; }
 
-            console.log('Showing share popup with link:', shareLink);
-            shareLinkDisplay.textContent = shareLink; // Link ko display area me daalo
-            copyStatusMessage.textContent = ''; // Purana message clear karo
-            copyLinkButton.innerHTML = '<i class="fas fa-copy"></i> Copy Link'; // Button text reset karo
+        // --- Presence Management (Unchanged) ---
+        function setupPresence(user) {const userStatusDatabaseRef = dbRef(database, '/status/' + user.uid); const isOfflineForDatabase = { isOnline: false, lastSeen: serverTimestamp() }; const isOnlineForDatabase = { isOnline: true, lastSeen: serverTimestamp() }; const connectedRef = dbRef(database, '.info/connected'); onValue(connectedRef, (snapshot) => { if (snapshot.val() === false) { return; } onDisconnect(userStatusDatabaseRef).set(isOfflineForDatabase).then(() => { set(userStatusDatabaseRef, isOnlineForDatabase); console.log(`Presence for ${user.uid} set to online.`); }); }); }
 
-            // Overlay ko dikhao (smooth transition ke liye class add karo)
-            sharePopupOverlay.classList.add('visible');
-        }
+        // --- Auth UI & Logic (Unchanged) ---
+        function renderAuthUI() { if (!authFormsWrapper) { console.error("Auth forms wrapper not found!"); return; } let html = ''; if (authMode === 'login') { html = `<h2 style="color: var(--primary-text-color);">Login</h2><div class="auth-form"> <div class="input-group"><input type="email" id="email-input" placeholder="Email" required></div> <div class="input-group"><input type="password" id="password-input" placeholder="Password" required><span class="password-toggle"><i class="fas fa-eye"></i></span></div> <p class="forgot-password-link"><button type="button" id="forgot-password-button">Forgot Password?</button></p> <button id="signin-button">Sign In</button> <div id="auth-status"></div> <p class="auth-switch">Don't have an account? <button type="button" id="switch-to-signup">Sign Up</button></p> </div><div class="auth-form"> <h3 style="color: var(--secondary-text-color); font-size:0.9em; font-weight:normal; margin-bottom:10px;">Or</h3> <button id="google-signin-button"><i class="fab fa-google" style="margin-right:8px;"></i> Sign In with Google</button> </div>`; } else { html = `<h2 style="color: var(--primary-text-color);">Sign Up</h2><div class="auth-form"> <div class="input-group"><input type="email" id="email-input" placeholder="Email" required></div> <div class="input-group"><input type="password" id="password-input" placeholder="Password (min. 6 characters)" required><span class="password-toggle"><i class="fas fa-eye"></i></span></div> <div class="input-group"><input type="text" id="display-name-input" placeholder="Your Name (e.g., John Doe)"></div> <button id="signup-button">Sign Up</button <div id="auth-status"></div> <p class="auth-switch">Already have an account? <button type="button" id="switch-to-login">Log In</button></p> </div>`; } authFormsWrapper.innerHTML = html; addAuthEventListeners(); }
+        function addAuthEventListeners() { const emailInput = authFormsWrapper.querySelector('#email-input'); const passwordInput = authFormsWrapper.querySelector('#password-input'); const passwordToggle = authFormsWrapper.querySelector('.password-toggle'); if (passwordToggle && passwordInput) { passwordToggle.addEventListener('click', () => { const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'; passwordInput.setAttribute('type', type); passwordToggle.querySelector('i').classList.toggle('fa-eye'); passwordToggle.querySelector('i').classList.toggle('fa-eye-slash'); }); } if (authMode === 'login') { authFormsWrapper.querySelector('#signin-button')?.addEventListener('click', handleSignIn); authFormsWrapper.querySelector('#google-signin-button')?.addEventListener('click', handleGoogleSignIn); authFormsWrapper.querySelector('#switch-to-signup')?.addEventListener('click', () => { authMode = 'signup'; renderAuthUI(); }); authFormsWrapper.querySelector('#forgot-password-button')?.addEventListener('click', handleForgotPassword); } else { authFormsWrapper.querySelector('#signup-button')?.addEventListener('click', handleSignUp); authFormsWrapper.querySelector('#switch-to-login')?.addEventListener('click', () => { authMode = 'login'; renderAuthUI(); }); } emailInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter' && passwordInput) passwordInput.focus(); }); if(passwordInput) passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { if (authMode === 'login') authFormsWrapper.querySelector('#signin-button')?.click(); else authFormsWrapper.querySelector('#signup-button')?.click(); } }); authFormsWrapper.querySelector('#display-name-input')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { authFormsWrapper.querySelector('#signup-button')?.click(); } }); }
+        function setAuthStatus(message, isError = false) { const authStatusEl = authFormsWrapper?.querySelector('#auth-status'); if (authStatusEl) { authStatusEl.textContent = message; authStatusEl.className = isError ? 'status-error' : 'status-info'; } }
+        async function handleForgotPassword() { const emailInput = authFormsWrapper.querySelector('#email-input'); if (!emailInput) { alert("Email field not found."); return; } const email = emailInput.value.trim(); if (!email) { setAuthStatus("Please enter your email address.", true); emailInput.focus(); return; } setAuthStatus("Sending password reset email...", false); showLoader(); try { await sendPasswordResetEmail(auth, email); hideLoader(); setAuthStatus("Password reset email sent!", false); } catch (error) { hideLoader(); console.error(error); setAuthStatus(`Error: ${error.message}`, true); } }
+        const handleSignOut = () => { console.log("Signing out..."); if (currentUser && currentUser.uid) { const userStatusRef = dbRef(database, '/status/' + currentUser.uid); set(userStatusRef, { isOnline: false, lastSeen: serverTimestamp() }).catch(err => console.error("Error setting offline status on logout:", err)); } detachMyChatsListener(); detachMessageListener(); detachPartnerStatusListener(); if (globalNotificationListenerUnsubscribe) { off(dbRef(database, 'global_notifications'), 'value', globalNotificationListenerUnsubscribe); globalNotificationListenerUnsubscribe = null; } if (typeof hideContextMenu === "function") hideContextMenu(); if (typeof hideChatOptionsMenu === "function") hideChatOptionsMenu(); if (sharePopupOverlay && sharePopupOverlay.classList.contains('visible')) { hideSharePopup(); } signOut(auth).catch((error) => { alert(`Sign out error: ${error.message}`); }); };
+        if(settingLogoutBtn) settingLogoutBtn.addEventListener('click', handleSignOut);
+        onAuthStateChanged(auth, (user) => { setAuthStatus(''); detachMyChatsListener(); detachMessageListener(); detachPartnerStatusListener(); if (globalNotificationListenerUnsubscribe) { off(dbRef(database, 'global_notifications'), 'value', globalNotificationListenerUnsubscribe); globalNotificationListenerUnsubscribe = null; } isAdminUser = false; if (user) { console.log("onAuthStateChanged: User LOGGED IN", user.uid, user.email); setupPresence(user); const userRef = dbRef(database, 'users/' + user.uid); get(userRef).then(snapshot => { if (snapshot.exists()) { currentUser = snapshot.val(); if (!currentUser.email && user.email) currentUser.email = user.email; isAdminUser = (currentUser.email === ADMIN_EMAIL); console.log("User data from DB:", currentUser, "Is Admin:", isAdminUser); if (!currentUser.settings) currentUser.settings = { darkMode: false, fontSize: 'default', language: 'English', timezone: '' }; applyUserPreferences(currentUser.settings); updateAdminPanelAccessUI(); attachGlobalNotificationListener(); ensurePublicIdExistsAndUpdateIfNeeded(currentUser).then(() => { attachMyChatsListener(); loadProfileForSettingsScreen(); showView('chat-list-view'); updateBottomNavActiveState('chat-list-view'); }).catch(profileError => { console.error("Error after fetching profile (ensurePublicId):", profileError); handleSignOut(); showView('auth-container'); }); } else { console.log("User profile not found in DB, creating one..."); const initialDisplayName = user.displayName || user.email.split('@')[0]; const fallbackUser = { uid: user.uid, email: user.email, displayName: initialDisplayName }; ensureUserProfileExists(user, fallbackUser, true); } }).catch(error => { console.error("Profile fetch error in onAuthStateChanged:", error); handleSignOut(); showView('auth-container'); }); } else { console.log("onAuthStateChanged: User LOGGED OUT"); currentUser = null; allUsersCache = {}; authMode = 'login'; isAdminUser = false; updateAdminPanelAccessUI(); applyUserPreferences({ darkMode: false, fontSize: 'default' }); renderAuthUI(); showView('auth-container'); updateBottomNavActiveState(null); } });
+        async function ensureUserProfileExists(authUser, userDataFromDb = null, forceCreate = false) { const userRef = dbRef(database, 'users/' + authUser.uid); try { const snapshot = userDataFromDb ? { exists: () => true, val: () => userDataFromDb } : await get(userRef); if (!snapshot.exists() || forceCreate) { const signupDisplayNameInput = authContainer.querySelector('#display-name-input'); const signupDisplayName = signupDisplayNameInput ? signupDisplayNameInput.value.trim() : null; const initialDisplayName = signupDisplayName || authUser.displayName || authUser.email.split('@')[0]; const publicUserID = generateBasePublicID(initialDisplayName || authUser.email); const newUserProfile = { uid: authUser.uid, email: authUser.email, displayName: initialDisplayName, publicUserID: publicUserID, createdAt: serverTimestamp(), isOnline: true, lastSeen: serverTimestamp(), avatarEmoji: AVAILABLE_AVATAR_EMOJIS[0], location: '', timezone: '', language: 'English', settings: { darkMode: false, fontSize: 'default'}, blockedUsers: {}, isBanned: false }; await set(userRef, newUserProfile); if (authUser.displayName !== initialDisplayName && auth.currentUser) { try { await updateProfile(auth.currentUser, { displayName: initialDisplayName }); } catch (err) { console.warn(err); } } if (!currentUser || forceCreate) { currentUser = newUserProfile; isAdminUser = (currentUser.email === ADMIN_EMAIL); applyUserPreferences(currentUser.settings); updateAdminPanelAccessUI(); attachGlobalNotificationListener(); attachMyChatsListener(); showView('chat-list-view'); updateBottomNavActiveState('chat-list-view'); } } else { const dbData = snapshot.val(); if (!currentUser || currentUser.uid !== dbData.uid) currentUser = dbData; if (!currentUser.email && authUser.email) currentUser.email = authUser.email; isAdminUser = (currentUser.email === ADMIN_EMAIL); if (authUser.displayName && dbData.displayName !== authUser.displayName) { await update(userRef, { displayName: authUser.displayName }); if(currentUser) currentUser.displayName = authUser.displayName; } await ensurePublicIdExistsAndUpdateIfNeeded(dbData); if (!currentUser.settings) { currentUser.settings = { darkMode: false, fontSize: 'default', language: 'English', timezone: '' }; } applyUserPreferences(currentUser.settings); updateAdminPanelAccessUI(); attachGlobalNotificationListener(); const activeView = document.querySelector('.view.active'); if ((!activeView || activeView.id === 'initial-loading-view') && !document.getElementById('auth-container').classList.contains('active')) { showView('chat-list-view'); updateBottomNavActiveState('chat-list-view');} } } catch (error) { console.error("Error in ensureUserProfileExists:", error); setAuthStatus("Failed to init profile.", true); showView('auth-container'); } }
+        function generateBasePublicID(nameOrEmail) { const base = nameOrEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase().substring(0, 10) || 'user'; const randomDigits = Math.floor(1000 + Math.random() * 9000); return `${base}${randomDigits}`; }
+        async function ensurePublicIdExistsAndUpdateIfNeeded(userData) { if (!userData || !userData.uid) { return; } const needsPublicId = !userData.publicUserID || userData.publicUserID.trim() === ''; if (needsPublicId) { const publicUserID = generateBasePublicID(userData.displayName || userData.email); const userRef = dbRef(database, 'users/' + userData.uid); try { await update(userRef, { publicUserID: publicUserID }); if (currentUser && currentUser.uid === userData.uid) { currentUser.publicUserID = publicUserID; } } catch (error) { console.error(error); } } }
+        function handleSignUp() { const emailInput = authFormsWrapper?.querySelector('#email-input'); const passwordInput = authFormsWrapper?.querySelector('#password-input'); if (!emailInput || !passwordInput) return; const email = emailInput.value; const password = passwordInput.value; setAuthStatus(''); if (!email || !password) { setAuthStatus('Please enter email and password.', true); return; } if (password.length < 6) { setAuthStatus('Password must be at least 6 characters long.', true); return; } setAuthStatus('Signing up...'); createUserWithEmailAndPassword(auth, email, password).then(() => { setAuthStatus('Account created! Setting up profile...', false); }).catch((error) => { if (error.code === 'auth/email-already-in-use') { setAuthStatus('This email is already registered. Please Log In.', true); authMode = 'login'; renderAuthUI(); if(authFormsWrapper) authFormsWrapper.querySelector('#email-input').value = email; } else { setAuthStatus(`Sign up failed: ${error.message}`, true); } }); }
+        function handleSignIn() { const emailInput = authFormsWrapper?.querySelector('#email-input'); const passwordInput = authFormsWrapper?.querySelector('#password-input'); if (!emailInput || !passwordInput) return; const email = emailInput.value; const password = passwordInput.value; setAuthStatus(''); if (!email || !password) { setAuthStatus('Please enter email and password.', true); return; } setAuthStatus('Logging in...'); signInWithEmailAndPassword(auth, email, password).catch((error) => { if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') { setAuthStatus('Invalid email or password.', true); } else { setAuthStatus(`Sign in failed: ${error.message}`, true); } }); }
+        function handleGoogleSignIn() { setAuthStatus('Connecting to Google...'); signInWithPopup(auth, googleProvider).catch((error) => { if (error.code === 'auth/popup-closed-by-user') { setAuthStatus('Google Sign in cancelled.', false); } else if (error.code === 'auth/network-request-failed') { setAuthStatus('Network error.', true); } else { setAuthStatus(`Google Sign in failed: ${error.message}`, true); } }); }
 
-        function hideSharePopup() {
-             // Overlay ko chhupao (smooth transition ke liye class remove karo)
-             sharePopupOverlay.classList.remove('visible');
-        }
+        // --- Bottom Navigation & Profile Settings (Unchanged) ---
+        function updateBottomNavActiveState(activeViewId) { if (!bottomNavItems) return; bottomNavItems.forEach(item => { item.classList.toggle('active', item.dataset.viewId === activeViewId); }); }
+        if(bottomNavItems) bottomNavItems.forEach(item => { item.addEventListener('click', () => { const viewId = item.dataset.viewId; const currentActiveView = document.querySelector('.view.active'); if (!viewId || (currentActiveView && currentActiveView.id === viewId)) return; if (viewId === 'profile-settings-view' && currentUser) { loadProfileForSettingsScreen(); } else if (viewId) { showView(viewId); } updateBottomNavActiveState(viewId); }); });
+        if(fabNewChatBtn) fabNewChatBtn.addEventListener('click', () => { if (!document.getElementById('chat-list-view')?.classList.contains('active')) { showView('chat-list-view'); updateBottomNavActiveState('chat-list-view'); } console.log("FAB Clicked - Placeholder for new chat initiation"); });
+        function loadProfileForSettingsScreen() { if (!currentUser) { showView('auth-container'); return; } if(settingsProfileName) settingsProfileName.textContent = currentUser.displayName || 'User'; if(settingsProfileEmail) settingsProfileEmail.textContent = currentUser.email || 'No email'; if (settingsAvatarDisplay) { if (currentUser.avatarEmoji) { settingsAvatarDisplay.textContent = currentUser.avatarEmoji; settingsAvatarDisplay.classList.remove('initial-avatar'); } else { settingsAvatarDisplay.textContent = (currentUser.displayName || 'U').charAt(0).toUpperCase(); settingsAvatarDisplay.classList.add('initial-avatar'); } } if(currentUser.settings) applyUserPreferences(currentUser.settings); else applyUserPreferences({}); updateAdminPanelAccessUI(); showView('profile-settings-view'); }
+        if(chatListProfileBtn) chatListProfileBtn.addEventListener('click', () => { if(currentUser) { loadProfileForSettingsScreen(); updateBottomNavActiveState('profile-settings-view'); } });
+        if(goToEditProfileBtn) goToEditProfileBtn.addEventListener('click', () => { if (!currentUser) return; if(profileEmailDisplayEdit) profileEmailDisplayEdit.value = currentUser.email || ''; if(profileNameInputEdit) profileNameInputEdit.value = currentUser.displayName || ''; if(profilePublicIdInputEdit) profilePublicIdInputEdit.value = currentUser.publicUserID || ''; if(profileLocationInputEdit) profileLocationInputEdit.value = currentUser.location || ''; if(profileTimezoneInputEdit) profileTimezoneInputEdit.value = currentUser.settings?.timezone || ''; if(profileLanguageInputEdit) profileLanguageInputEdit.value = currentUser.settings?.language || 'English'; selectedAvatarEmoji = currentUser.avatarEmoji || AVAILABLE_AVATAR_EMOJIS[0]; if(editAvatarPreviewMain) { editAvatarPreviewMain.textContent = selectedAvatarEmoji; editAvatarPreviewMain.classList.toggle('initial-avatar', !currentUser.avatarEmoji); } if(emojiPickerSectionEdit) emojiPickerSectionEdit.style.display = 'none'; if(profileEditStatusMsg) profileEditStatusMsg.textContent = ''; showView('profile-edit-view'); updateBottomNavActiveState(null); });
+        if(editAvatarBtn) editAvatarBtn.addEventListener('click', () => { if(emojiPickerSectionEdit) { emojiPickerSectionEdit.style.display = emojiPickerSectionEdit.style.display === 'none' ? 'block' : 'none'; if (emojiPickerSectionEdit.style.display === 'block') renderEmojiPickerForEditProfile(); } });
+        function renderEmojiPickerForEditProfile() { if(!emojiGridEdit || !editAvatarPreviewMain) return; emojiGridEdit.innerHTML = ''; AVAILABLE_AVATAR_EMOJIS.forEach(emoji => { const emojiOption = document.createElement('div'); emojiOption.classList.add('emoji-option'); emojiOption.textContent = emoji; emojiOption.dataset.emoji = emoji; emojiOption.setAttribute('role', 'radio'); emojiOption.setAttribute('aria-checked', String(emoji === selectedAvatarEmoji)); if (emoji === selectedAvatarEmoji) emojiOption.classList.add('selected'); emojiOption.addEventListener('click', () => { selectedAvatarEmoji = emoji; editAvatarPreviewMain.textContent = selectedAvatarEmoji; editAvatarPreviewMain.classList.remove('initial-avatar'); document.querySelectorAll('#emoji-grid-edit .emoji-option').forEach(opt => { opt.classList.remove('selected'); opt.setAttribute('aria-checked', 'false'); }); emojiOption.classList.add('selected'); emojiOption.setAttribute('aria-checked', 'true'); }); emojiGridEdit.appendChild(emojiOption); }); }
+        if(deleteAvatarBtn) deleteAvatarBtn.addEventListener('click', () => { if (confirm("Remove your current avatar?")) { selectedAvatarEmoji = null; if(editAvatarPreviewMain) { editAvatarPreviewMain.textContent = (currentUser.displayName || 'U').charAt(0).toUpperCase(); editAvatarPreviewMain.classList.add('initial-avatar'); } } });
+        if(saveProfileChangesBtn) saveProfileChangesBtn.addEventListener('click', async () => { if (!currentUser || !profileEditStatusMsg) return; const updates = {}; let changesMade = false; const newDisplayName = profileNameInputEdit.value.trim(); const newPublicId = profilePublicIdInputEdit.value.trim().toLowerCase(); const newLocation = profileLocationInputEdit.value.trim(); const newTimezone = profileTimezoneInputEdit.value.trim(); const newLanguage = profileLanguageInputEdit.value.trim(); if (newDisplayName && newDisplayName !== currentUser.displayName) { updates.displayName = newDisplayName; changesMade = true; } if (newPublicId && newPublicId !== currentUser.publicUserID) { if(newPublicId.length < 5){ profileEditStatusMsg.textContent = 'Public UserID min 5 chars.'; return;} updates.publicUserID = newPublicId; changesMade = true; } if (selectedAvatarEmoji !== currentUser.avatarEmoji) { updates.avatarEmoji = selectedAvatarEmoji; changesMade = true; } if (newLocation !== (currentUser.location || '')) { updates.location = newLocation; changesMade = true; } if (newTimezone !== (currentUser.settings?.timezone || '')) { updates['settings/timezone'] = newTimezone; changesMade = true; } if (newLanguage !== (currentUser.settings?.language || '')) { updates['settings/language'] = newLanguage; changesMade = true; } if (!changesMade) { profileEditStatusMsg.textContent = 'No changes.'; return; } profileEditStatusMsg.textContent = 'Saving...'; showLoader(); try { const userDbRef = dbRef(database, 'users/' + currentUser.uid); await update(userDbRef, updates); Object.assign(currentUser, updates); if(updates['settings/timezone']) { if(!currentUser.settings) currentUser.settings={}; currentUser.settings.timezone = updates['settings/timezone'];} if(updates['settings/language']) { if(!currentUser.settings) currentUser.settings={}; currentUser.settings.language = updates['settings/language'];} if (allUsersCache[currentUser.uid]) Object.assign(allUsersCache[currentUser.uid], updates); if (updates.displayName && auth.currentUser) await updateProfile(auth.currentUser, { displayName: updates.displayName }); applyUserPreferences(currentUser.settings); hideLoader(); profileEditStatusMsg.textContent = 'Profile saved!'; setTimeout(() => { profileEditStatusMsg.textContent = ''; loadProfileForSettingsScreen(); updateBottomNavActiveState('profile-settings-view'); }, 1500); } catch (error) { hideLoader(); profileEditStatusMsg.textContent = `Error saving: ${error.message}`; console.error(error); } });
+        if(editProfileBackBtn) editProfileBackBtn.addEventListener('click', () => { loadProfileForSettingsScreen(); updateBottomNavActiveState('profile-settings-view'); });
 
-        // Header ke Share Button pe click listener
-        shareAppButton.addEventListener('click', showSharePopup);
+        // --- Settings Modal Logic (Unchanged) ---
+        function openSettingsModal(settingKey) { if(!settingsModalOverlay || !settingsModalTitle || !settingsModalContent) return; currentSettingKey = settingKey; settingsModalTitle.textContent = `Set ${settingKey.charAt(0).toUpperCase() + settingKey.slice(1)}`; settingsModalContent.innerHTML = ''; let currentValue; if (currentUser && currentUser.settings) { currentValue = currentUser.settings[settingKey]; } if (settingKey === 'darkMode') { const currentDMValue = typeof currentValue === 'boolean' ? currentValue : false; settingsModalContent.innerHTML = `<div class="modal-options"><div class="option ${!currentDMValue ? 'selected' : ''}" data-value="false">Off</div><div class="option ${currentDMValue ? 'selected' : ''}" data-value="true">On</div></div>`; } else if (settingKey === 'fontSize') { const currentFSValue = currentValue || 'default'; settingsModalContent.innerHTML = `<div class="modal-options"><div class="option ${currentFSValue === 'small' ? 'selected' : ''}" data-value="small">Small</div><div class="option ${currentFSValue === 'default' ? 'selected' : ''}" data-value="default">Default</div><div class="option ${currentFSValue === 'large' ? 'selected' : ''}" data-value="large">Large</div></div>`; } else if (settingKey === 'language') { const currentLangValue = currentValue || 'English'; settingsModalContent.innerHTML = `<div class="modal-input-group"><label for="modal-language-input">Enter Language</label><input type="text" id="modal-language-input" value="${currentLangValue}"></div>`; } else if (settingKey === 'timezone') { const currentTimezoneValue = currentValue || ''; settingsModalContent.innerHTML = `<div class="modal-input-group"><label for="modal-timezone-input">Enter Timezone (e.g., UTC+5:30)</label><input type="text" id="modal-timezone-input" value="${currentTimezoneValue}"></div>`; } settingsModalOverlay.classList.add('visible'); settingsModalContent.querySelectorAll('.option').forEach(optionEl => { optionEl.addEventListener('click', () => { settingsModalContent.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected')); optionEl.classList.add('selected'); }); }); }
+        if(settingsModalCancelBtn) settingsModalCancelBtn.addEventListener('click', () => settingsModalOverlay.classList.remove('visible'));
+        if(settingsModalSaveBtn) settingsModalSaveBtn.addEventListener('click', async () => { if (!currentUser || !currentSettingKey) return; let newValue; if (currentSettingKey === 'darkMode') { const selectedOption = settingsModalContent.querySelector('.option.selected'); if (selectedOption) newValue = selectedOption.dataset.value === 'true'; } else if (currentSettingKey === 'fontSize') { const selectedOption = settingsModalContent.querySelector('.option.selected'); if (selectedOption) newValue = selectedOption.dataset.value; } else if (currentSettingKey === 'language') { const inputEl = document.getElementById('modal-language-input'); if (inputEl) newValue = inputEl.value.trim(); } else if (currentSettingKey === 'timezone') { const inputEl = document.getElementById('modal-timezone-input'); if (inputEl) newValue = inputEl.value.trim(); } if (typeof newValue !== 'undefined') { const updates = {}; updates[`settings/${currentSettingKey}`] = newValue; showLoader(); try { const userDbRef = dbRef(database, 'users/' + currentUser.uid); await update(userDbRef, updates); if (!currentUser.settings) currentUser.settings = {}; currentUser.settings[currentSettingKey] = newValue; applyUserPreferences(currentUser.settings); hideLoader(); settingsModalOverlay.classList.remove('visible'); } catch (error) { hideLoader(); console.error("Error saving setting:", error); alert("Failed to save setting."); } } else { settingsModalOverlay.classList.remove('visible'); } });
+        document.querySelectorAll('.settings-list .settings-item[data-setting]').forEach(item => { item.addEventListener('click', () => { const settingKey = item.dataset.setting; openSettingsModal(settingKey); }); });
 
-        // Popup ke Close Button pe click listener
-        closeSharePopupButton.addEventListener('click', hideSharePopup);
+        // --- Chat List, Search, Core Chat, etc. (Unchanged from previous response with admin features) ---
+        // ... (All these functions: attachMyChatsListener, detachMyChatsListener, renderChatList, renderSingleChatListItem, etc., remain the same as the last provided version)
+        function attachMyChatsListener() { if (!currentUser || !chatsListDiv) return; detachMyChatsListener(); const myChatsRef = dbRef(database, `users/${currentUser.uid}/chats`); const chatsQuery = query(myChatsRef, orderByChild('lastTimestamp')); myChatsListenerUnsubscribe = onValue(chatsQuery, (snapshot) => { const chatsData = []; if (snapshot.exists()) { snapshot.forEach(childSnapshot => { chatsData.push({ chatId: childSnapshot.key, ...childSnapshot.val() }); }); chatsData.sort((a, b) => b.lastTimestamp - a.lastTimestamp); } renderChatList(chatsData); }, (error) => { console.error("Error fetching my chats:", error); if(chatsListDiv) chatsListDiv.innerHTML = '<p class="list-placeholder status-error">Could not load chats.</p>'; }); }
+        function detachMyChatsListener() { if (myChatsListenerUnsubscribe && currentUser) { const myChatsRef = dbRef(database, `users/${currentUser.uid}/chats`); off(myChatsRef, 'value', myChatsListenerUnsubscribe); myChatsListenerUnsubscribe = null; console.log("Detached my chats listener."); } }
+        function renderChatList(chats) { if(!chatsListDiv) return; chatsListDiv.innerHTML = ''; if (chats.length === 0) { chatsListDiv.innerHTML = '<p class="list-placeholder">No active chats.</p>'; return; } chats.forEach(chatData => { const partnerUid = chatData.partnerUid; if (!partnerUid) return; const cachedPartner = allUsersCache[partnerUid]; if (cachedPartner) { renderSingleChatListItem(cachedPartner, chatData); } else { const partnerRef = dbRef(database, `users/${partnerUid}`); get(partnerRef).then(partnerSnapshot => { if (partnerSnapshot.exists()) { const partnerData = partnerSnapshot.val(); allUsersCache[partnerUid] = partnerData; renderSingleChatListItem(partnerData, chatData); } }).catch(err => console.error("Error fetching partner for chat list:", err)); } }); }
+        function renderSingleChatListItem(partnerData, chatData) { if (!partnerData || !chatsListDiv) return; const chatItem = document.createElement('div'); chatItem.classList.add('list-item'); const avatarDiv = document.createElement('div'); avatarDiv.classList.add('avatar'); if (partnerData.avatarEmoji) { avatarDiv.textContent = partnerData.avatarEmoji; } else { const initial = partnerData.displayName ? partnerData.displayName.charAt(0).toUpperCase() : '?'; avatarDiv.textContent = initial; avatarDiv.classList.add('initial-avatar'); } const onlineIndicator = document.createElement('div'); onlineIndicator.classList.add('online-indicator'); avatarDiv.appendChild(onlineIndicator); listenForUserStatusInList(partnerData.uid, onlineIndicator); const itemInfoDiv = document.createElement('div'); itemInfoDiv.classList.add('list-item-info'); const nameSpan = document.createElement('span'); nameSpan.classList.add('name'); nameSpan.textContent = partnerData.displayName || 'No Name Set'; const detailSpan = document.createElement('span'); detailSpan.classList.add('detail'); detailSpan.textContent = partnerData.isBanned ? 'User Suspended' : (chatData.lastMessageText || `Chat started...`); if(partnerData.isBanned) detailSpan.style.color = 'var(--danger-color)'; itemInfoDiv.appendChild(nameSpan); itemInfoDiv.appendChild(detailSpan); chatItem.appendChild(avatarDiv); chatItem.appendChild(itemInfoDiv); chatItem.addEventListener('click', () => startChat(partnerData)); chatsListDiv.appendChild(chatItem); }
+        function listenForUserStatusInList(userId, indicatorElement) { const userStatusRef = dbRef(database, `/status/${userId}`); onValue(userStatusRef, (snapshot) => { if (snapshot.exists()) { const status = snapshot.val(); indicatorElement.classList.toggle('is-online', status.isOnline); } else { indicatorElement.classList.remove('is-online'); } });}
+        if(userSearchInput) userSearchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.trim().toLowerCase(); clearTimeout(searchDebounceTimer); if (!searchTerm) { if(searchResultsListDiv) {searchResultsListDiv.style.display = 'none'; searchResultsListDiv.innerHTML = '';} return; } if(searchResultsListDiv) {searchResultsListDiv.style.display = 'block'; searchResultsListDiv.innerHTML = '<p class="list-placeholder" style="padding:10px;">Searching...</p>';} searchDebounceTimer = setTimeout(() => { searchUsers(searchTerm); }, 300); });
+        async function searchUsers(searchTerm) { if (!searchTerm || !searchResultsListDiv) return; searchResultsListDiv.innerHTML = '<p class="list-placeholder" style="padding:10px;">Searching...</p>'; const usersRef = dbRef(database, 'users'); try { const snapshot = await get(usersRef); const results = []; if (snapshot.exists()) { snapshot.forEach(childSnapshot => { const user = childSnapshot.val(); if (user.uid !== currentUser?.uid && !user.isBanned && ((user.displayName && user.displayName.toLowerCase().includes(searchTerm)) || (user.publicUserID && user.publicUserID.toLowerCase().includes(searchTerm)))) { results.push(user); allUsersCache[user.uid] = user; } }); } renderSearchResults(results); } catch (error) { console.error("Error searching users:", error.code, error.message); searchResultsListDiv.innerHTML = `<p class="list-placeholder status-error" style="padding:10px;">Error searching: ${error.message}</p>`; } }
+        function renderSearchResults(results) { if(!searchResultsListDiv) return; searchResultsListDiv.innerHTML = ''; if (results.length === 0) { searchResultsListDiv.innerHTML = '<p class="list-placeholder" style="padding:10px;">No users found.</p>'; return; } results.forEach(user => { const userItem = document.createElement('div'); userItem.classList.add('list-item'); const avatarDiv = document.createElement('div'); avatarDiv.classList.add('avatar'); if (user.avatarEmoji) { avatarDiv.textContent = user.avatarEmoji; } else { const initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : '?'; avatarDiv.textContent = initial; avatarDiv.classList.add('initial-avatar');} const itemInfoDiv = document.createElement('div'); itemInfoDiv.classList.add('list-item-info'); const nameSpan = document.createElement('span'); nameSpan.classList.add('name'); nameSpan.textContent = user.displayName || 'No Name Set'; const detailSpan = document.createElement('span'); detailSpan.classList.add('detail'); detailSpan.textContent = `@${user.publicUserID || 'no_id'}`; itemInfoDiv.appendChild(nameSpan); itemInfoDiv.appendChild(detailSpan); userItem.appendChild(avatarDiv); userItem.appendChild(itemInfoDiv); userItem.addEventListener('click', () => { startChat(user); if(userSearchInput) userSearchInput.value = ''; searchResultsListDiv.style.display = 'none'; searchResultsListDiv.innerHTML = ''; }); searchResultsListDiv.appendChild(userItem); }); }
+        function generateChatId(uid1, uid2) { return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`; }
+        async function startChat(partnerData) { if (!currentUser || !partnerData || !partnerData.uid) return; if (currentUser.isBanned) { alert("Your account is suspended. You cannot start new chats."); return; } if (partnerData.isBanned) { alert(`${partnerData.displayName || 'This user'} is currently suspended and cannot be chatted with.`); return; } if (allUsersCache[partnerData.uid]) { currentChatPartner = allUsersCache[partnerData.uid]; } else { const partnerRef = dbRef(database, `users/${partnerData.uid}`); try { const snapshot = await get(partnerRef); if (snapshot.exists()) { currentChatPartner = snapshot.val(); allUsersCache[partnerData.uid] = currentChatPartner; } else { alert("Could not start chat. User not found."); return; } } catch (error) { alert("Error loading user data."); return; } } detachMessageListener(); detachPartnerStatusListener(); currentChatId = generateChatId(currentUser.uid, currentChatPartner.uid); if(chatPartnerNameHeader) chatPartnerNameHeader.textContent = `${currentChatPartner.displayName || currentChatPartner.publicUserID}`; if(chatPartnerAvatarHeader){ if(currentChatPartner.avatarEmoji) {chatPartnerAvatarHeader.textContent = currentChatPartner.avatarEmoji; chatPartnerAvatarHeader.classList.remove('initial-avatar');} else { chatPartnerAvatarHeader.textContent = (currentChatPartner.displayName||'?').charAt(0).toUpperCase(); chatPartnerAvatarHeader.classList.add('initial-avatar');}} attachPartnerStatusListener(currentChatPartner.uid); if(messagesArea) messagesArea.innerHTML = ''; if(messageInput) messageInput.value = ''; const messagesRef = dbRef(database, `chats/${currentChatId}/messages`); attachMessageListener(messagesRef); updateBlockedUI(); showView('chat-view'); updateBottomNavActiveState(null); if(messageInput) messageInput.focus(); const ts = serverTimestamp(); const meta = { partnerUid: currentChatPartner.uid, partnerName: currentChatPartner.displayName || '', lastTimestamp: ts }; const pMeta = { partnerUid: currentUser.uid, partnerName: currentUser.displayName || '', lastTimestamp: ts }; Promise.all([set(dbRef(database, `users/${currentUser.uid}/chats/${currentChatId}`), meta), set(dbRef(database, `users/${currentChatPartner.uid}/chats/${currentChatId}`), pMeta)]).catch(console.error); }
+        function attachMessageListener(messagesRef) { const queryRef = query(messagesRef, orderByChild('timestamp')); messageListenerUnsubscribe = onValue(queryRef, (snapshot) => { if(!messagesArea || !currentUser || !currentChatPartner)return; messagesArea.innerHTML = ''; let unread = []; if (snapshot.exists()) { snapshot.forEach(c => { const msg = c.val(); if (currentUser.blockedUsers && currentUser.blockedUsers[msg.senderUid]) { console.log("Message from blocked user ignored."); return; } if (currentChatPartner.blockedUsers && currentChatPartner.blockedUsers[currentUser.uid] && msg.senderUid === currentUser.uid) { console.log("Current user is blocked by partner, but showing own sent messages."); } displayMessage(msg, c.key); if (msg.senderUid !== currentUser.uid && !msg.isRead) unread.push(c.key); }); setTimeout(() => messagesArea.scrollTop = messagesArea.scrollHeight, 0); if (unread.length > 0) markMessagesAsRead(unread); } else { messagesArea.innerHTML = '<p class="list-placeholder" style="margin-top:20px;">No messages yet.</p>'; }}); }
+        function detachMessageListener() { if (messageListenerUnsubscribe && currentChatId) { off(dbRef(database, `chats/${currentChatId}/messages`), 'value', messageListenerUnsubscribe); messageListenerUnsubscribe = null; console.log(`Detached message listener for chat: ${currentChatId}`); } }
+        function markMessagesAsRead(messageIds) { if (!currentChatId || !currentUser) return; messageIds.forEach(id => set(dbRef(database, `chats/${currentChatId}/messages/${id}/isRead`), true)); }
+        function displayMessage(msgData, msgId) { if (!currentUser || !msgData || !msgData.senderUid || !msgId || !messagesArea) return; if (msgData.deletedFor?.[currentUser.uid]) return; const wrapper = document.createElement('div'); wrapper.classList.add('message-wrapper'); const div = document.createElement('div'); div.classList.add('message'); div.dataset.messageId = msgId; div.dataset.senderUid = msgData.senderUid; ['mousedown','touchstart'].forEach(evt => div.addEventListener(evt, handlePressStart)); ['mouseup','mouseleave','touchend','touchcancel'].forEach(evt => div.addEventListener(evt, handlePressEnd)); if (msgData.text) { const span = document.createElement('span'); span.classList.add('text'); span.textContent = msgData.text; div.appendChild(span); } const meta = document.createElement('div'); meta.classList.add('message-meta'); const time = document.createElement('span'); time.classList.add('timestamp'); time.textContent = (msgData.timestamp && typeof msgData.timestamp === 'number') ? new Date(msgData.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '--:--'; meta.appendChild(time); if (msgData.senderUid === currentUser.uid) { wrapper.classList.add('sent'); const ticks = document.createElement('span'); ticks.classList.add('message-ticks'); ticks.innerHTML = msgData.isRead ? '<i class="fas fa-check-double"></i>' : '<i class="fas fa-check"></i>'; if (msgData.isRead) ticks.classList.add('read'); meta.appendChild(ticks); } else { wrapper.classList.add('received'); } div.appendChild(meta); wrapper.appendChild(div); messagesArea.appendChild(wrapper); }
+        function attachPartnerStatusListener(uid) { detachPartnerStatusListener(); const ref = dbRef(database, `/status/${uid}`); partnerStatusListenerUnsubscribe = onValue(ref, s => { if(!chatPartnerStatusHeader) return; if (s.exists()) { const d = s.val(); chatPartnerStatusHeader.textContent = d.isOnline ? 'Online' : (d.lastSeen ? `Last seen: ${formatLastSeen(d.lastSeen)}` : 'Offline'); chatPartnerStatusHeader.style.color = d.isOnline ? 'var(--online-color)' : 'inherit'; } else { chatPartnerStatusHeader.textContent = 'Offline'; chatPartnerStatusHeader.style.color = 'inherit'; }}); }
+        function detachPartnerStatusListener() { if (partnerStatusListenerUnsubscribe && currentChatPartner) { off(dbRef(database, `/status/${currentChatPartner.uid}`), 'value', partnerStatusListenerUnsubscribe); partnerStatusListenerUnsubscribe = null; if(chatPartnerStatusHeader) chatPartnerStatusHeader.textContent = ''; console.log("Detached partner status listener."); } }
+        function formatLastSeen(ts) { if (!ts) return ''; const n = new Date(), l = new Date(ts), s = Math.round((n-l)/1000), m=Math.round(s/60), h=Math.round(m/60), d=Math.round(h/24); return s<60?'now':m===1?'1m ago':m<60?`${m}m ago`:h===1?'1h ago':h<24?`${h}h ago`:d===1?'yesterday':d<7?`${d}d ago`:l.toLocaleDateString(); }
+        function handlePressStart(e) { const msgEl = e.currentTarget; if (!msgEl.classList.contains('message')) return; if (e.type==='mousedown'&&e.button===2)e.preventDefault(); clearTimeout(longPressTimer); hideContextMenu(); const id=msgEl.dataset.messageId, sUid=msgEl.dataset.senderUid; if(!id||!sUid)return; longPressTargetInfo={el:msgEl,id:id,isSent:sUid===currentUser?.uid}; msgEl.classList.add('pressed'); longPressTimer=setTimeout(()=>{if(longPressTargetInfo){showContextMenu(e.changedTouches?e.changedTouches[0]:e, id, longPressTargetInfo.isSent);}},LONG_PRESS_DURATION);}
+        function handlePressEnd(e) { clearTimeout(longPressTimer); if(longPressTargetInfo?.el)longPressTargetInfo.el.classList.remove('pressed'); longPressTargetInfo=null; }
+        function showContextMenu(posEvt, msgId, isSent) { if(!messageContextMenu) return; messageContextMenu.innerHTML='';const delMe=document.createElement('button');delMe.innerHTML='<i class="fas fa-user-slash"></i> Delete for Me';delMe.onclick=()=>handleContextMenuAction('delete_me',msgId);messageContextMenu.appendChild(delMe);if(isSent){const delAll=document.createElement('button');delAll.classList.add('delete-everyone');delAll.innerHTML='<i class="fas fa-users-slash"></i> Delete for Everyone';delAll.onclick=()=>handleContextMenuAction('delete_everyone',msgId);messageContextMenu.appendChild(delAll);} messageContextMenu.style.display='block'; const rect=posEvt.target.getBoundingClientRect(); let top=posEvt.clientY||rect.top; let left=posEvt.clientX||rect.left; if(left+messageContextMenu.offsetWidth > window.innerWidth-10) left = window.innerWidth-messageContextMenu.offsetWidth-10; if(top+messageContextMenu.offsetHeight > window.innerHeight-10) top = window.innerHeight-messageContextMenu.offsetHeight-10; messageContextMenu.style.top=`${top}px`; messageContextMenu.style.left=`${left}px`; if(menuOverlay) menuOverlay.style.display='block';}
+        function hideContextMenu() { if(messageContextMenu) messageContextMenu.style.display='none'; if(menuOverlay && (!chatOptionsMenu || chatOptionsMenu.style.display === 'none')) menuOverlay.style.display='none'; if(longPressTargetInfo?.el)longPressTargetInfo.el.classList.remove('pressed');longPressTargetInfo=null;}
+        if(menuOverlay) menuOverlay.addEventListener('click', ()=>{ hideContextMenu(); hideChatOptionsMenu(); });
+        function handleContextMenuAction(action, msgId) { const originalIsSent = longPressTargetInfo?.isSent; hideContextMenu(); if (!msgId) { console.error("Message ID not found for context menu action."); return; } if (action === 'delete_me') { handleDeleteForMeInternal(msgId); } else if (action === 'delete_everyone') { if (originalIsSent) { handleDeleteForEveryoneInternal(msgId); } else { console.warn("Attempted 'Delete for Everyone' - original sent status unknown."); alert("Cannot delete for everyone.");} } }
+        function handleDeleteForEveryoneInternal(msgId) { if(!msgId||!currentChatId)return;if(confirm("Delete for everyone?")){remove(dbRef(database,`chats/${currentChatId}/messages/${msgId}`)).catch(console.error);}}
+        function handleDeleteForMeInternal(msgId) { if(!msgId||!currentChatId||!currentUser)return;if(confirm("Delete for me?")){set(dbRef(database,`chats/${currentChatId}/messages/${msgId}/deletedFor/${currentUser.uid}`),true).catch(console.error);}}
+        function sendTextMessage() { const txt=messageInput.value.trim();if(!txt || !messageInput)return; if (!currentUser || !currentChatId || !currentChatPartner) { alert("Cannot send: No active chat or user."); return; } if (currentUser.isBanned) { alert("Your account is suspended. You cannot send messages."); return; } if (currentChatPartner.isBanned) { alert(`${currentChatPartner.displayName || 'This user'} is suspended. You cannot send messages to them.`); return; } if (currentUser.blockedUsers && currentUser.blockedUsers[currentChatPartner.uid]) { alert("You have blocked this user. Unblock to send messages."); return; } if (currentChatPartner.blockedUsers && currentChatPartner.blockedUsers[currentUser.uid]) { alert("You cannot send messages to this user as they have blocked you."); return; } const ref=push(dbRef(database,`chats/${currentChatId}/messages`));set(ref,{senderUid:currentUser.uid,timestamp:serverTimestamp(),text:txt,isRead:false}).then(()=>{if(messageInput) messageInput.value='';updateChatMetadata(serverTimestamp(),txt);}).catch(console.error);}
+        if(sendButton) sendButton.addEventListener('click', sendTextMessage);
+        if(messageInput) messageInput.addEventListener('keypress', (e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTextMessage();}});
+        function updateChatMetadata(ts,lastTxt="Sent a message") {if(!currentUser||!currentChatPartner||!currentChatId)return;const d={lastTimestamp:ts,lastMessageText:lastTxt};update(dbRef(database,`users/${currentUser.uid}/chats/${currentChatId}`),d);update(dbRef(database,`users/${currentChatPartner.uid}/chats/${currentChatId}`),d);}
+        if(chatBackBtn) chatBackBtn.addEventListener('click', () => { detachMessageListener(); detachPartnerStatusListener(); hideContextMenu(); hideChatOptionsMenu(); currentChatId = null; currentChatPartner = null; showView('chat-list-view'); updateBottomNavActiveState('chat-list-view'); });
 
-        // Popup ke bahar (overlay pe) click karne par close karne ke liye listener
-        sharePopupOverlay.addEventListener('click', (event) => {
-            // Agar click overlay pe hua hai (modal pe nahi), toh popup band karo
-            if (event.target === sharePopupOverlay) {
-                hideSharePopup();
+        // Share Popup Logic (Unchanged)
+        function showSharePopup() { if(!sharePopupOverlay || !shareLinkDisplay || !copyLinkButton) return; const shareLink = "https://www.mediafire.com/file/m6rj5fo2h3oq5xc/familychat.apk/file"; shareLinkDisplay.textContent = shareLink; if(copyStatusMessage)copyStatusMessage.textContent = ''; copyLinkButton.innerHTML = '<i class="fas fa-copy"></i> Copy Link'; sharePopupOverlay.classList.add('visible'); }
+        function hideSharePopup() { if(sharePopupOverlay) sharePopupOverlay.classList.remove('visible'); }
+        if(chatListMoreBtn) chatListMoreBtn.addEventListener('click', () => { if (document.getElementById('chat-list-view')?.classList.contains('active')) { showSharePopup(); }});
+        if(closeSharePopupButton) closeSharePopupButton.addEventListener('click', hideSharePopup);
+        if(sharePopupOverlay) sharePopupOverlay.addEventListener('click', (event) => { if (event.target === sharePopupOverlay) { hideSharePopup(); } });
+        if(copyLinkButton) copyLinkButton.addEventListener('click', () => { const linkToCopy = shareLinkDisplay.textContent; clearTimeout(copyTimeout); if (!navigator.clipboard) { if(copyStatusMessage){ copyStatusMessage.textContent = 'Copy failed (HTTPS needed)'; copyStatusMessage.style.color = 'var(--danger-color)';} copyTimeout = setTimeout(() => { if(copyStatusMessage)copyStatusMessage.textContent = ''; }, 3000); return; } navigator.clipboard.writeText(linkToCopy).then(() => { if(copyStatusMessage){copyStatusMessage.textContent = 'Link Copied!'; copyStatusMessage.style.color = 'var(--success-color)';} copyLinkButton.innerHTML = '<i class="fas fa-check"></i> Copied!'; copyTimeout = setTimeout(() => { if(copyStatusMessage)copyStatusMessage.textContent = ''; copyLinkButton.innerHTML = '<i class="fas fa-copy"></i> Copy Link'; }, 2500); }).catch(err => { console.error('Failed to copy link: ', err); if(copyStatusMessage){copyStatusMessage.textContent = 'Copy Failed!'; copyStatusMessage.style.color = 'var(--danger-color)';} copyTimeout = setTimeout(() => {if(copyStatusMessage)copyStatusMessage.textContent = ''; }, 3000); }); });
+
+        // Blocking Feature Logic (Unchanged)
+        if(chatOptionsBtn) chatOptionsBtn.addEventListener('click', (e) => { e.stopPropagation(); if (!currentUser || !currentChatPartner || !chatOptionsMenu) return; const isBlockedByMe = currentUser.blockedUsers && currentUser.blockedUsers[currentChatPartner.uid]; chatOptionsMenu.innerHTML = `<button id="block-unblock-user-btn" class="${isBlockedByMe ? '' : 'block-user'}">${isBlockedByMe ? 'Unblock' : 'Block'} ${currentChatPartner.displayName || 'User'}</button>`; const rect = chatOptionsBtn.getBoundingClientRect(); chatOptionsMenu.style.top = `${rect.bottom + 2}px`; chatOptionsMenu.style.right = `5px`; chatOptionsMenu.style.left = 'auto'; chatOptionsMenu.style.display = 'block'; if(menuOverlay) menuOverlay.style.display = 'block'; const blockUnblockBtn = document.getElementById('block-unblock-user-btn'); if(blockUnblockBtn) blockUnblockBtn.onclick = () => { toggleBlockUser(currentChatPartner.uid, currentChatPartner.displayName); hideChatOptionsMenu(); }; });
+        function hideChatOptionsMenu() { if(chatOptionsMenu) chatOptionsMenu.style.display = 'none'; if(menuOverlay && (!messageContextMenu || messageContextMenu.style.display === 'none')) { menuOverlay.style.display = 'none'; } }
+        async function toggleBlockUser(userIdToBlock, userName) { if (!currentUser || !userIdToBlock) return; const blockedUserPath = `users/${currentUser.uid}/blockedUsers/${userIdToBlock}`; const currentlyBlocked = currentUser.blockedUsers && currentUser.blockedUsers[userIdToBlock]; if (currentlyBlocked) { if (confirm(`Unblock ${userName || 'this user'}?`)) { await set(dbRef(database, blockedUserPath), null); if (currentUser.blockedUsers) delete currentUser.blockedUsers[userIdToBlock]; alert(`${userName || 'User'} unblocked.`); } } else { if (currentChatPartner && currentChatPartner.isBanned) { alert(`${userName || 'This user'} is suspended by an admin and cannot be interacted with further.`); return; } if (confirm(`Block ${userName || 'this user'}? You will not see their new messages.`)) { await set(dbRef(database, blockedUserPath), true); if (!currentUser.blockedUsers) currentUser.blockedUsers = {}; currentUser.blockedUsers[userIdToBlock] = true; alert(`${userName || 'User'} blocked.`); } } updateBlockedUI(); }
+        function updateBlockedUI() { if (!currentUser || !currentChatPartner || !inputArea || !blockedChatOverlay || !messageInput || !sendButton || !unblockUserFromChatBtn) return; const iHaveBlockedPartner = currentUser.blockedUsers && currentUser.blockedUsers[currentChatPartner.uid]; const partnerHasBlockedMe = currentChatPartner.blockedUsers && currentChatPartner.blockedUsers[currentUser.uid]; const partnerIsBannedAdmin = currentChatPartner.isBanned; const blockedMessageTextEl = document.getElementById('blocked-message-text'); if (partnerIsBannedAdmin) { inputArea.style.display = 'none'; blockedChatOverlay.style.display = 'flex'; if(blockedMessageTextEl) blockedMessageTextEl.textContent = `${currentChatPartner.displayName || 'This user'} has been suspended.`; unblockUserFromChatBtn.style.display = 'none'; } else if (iHaveBlockedPartner) { inputArea.style.display = 'none'; blockedChatOverlay.style.display = 'flex'; if(blockedMessageTextEl) blockedMessageTextEl.textContent = `You have blocked ${currentChatPartner.displayName || 'this user'}.`; unblockUserFromChatBtn.style.display = 'inline-block'; } else if (partnerHasBlockedMe) { inputArea.style.display = 'none'; blockedChatOverlay.style.display = 'flex'; if(blockedMessageTextEl) blockedMessageTextEl.textContent = `You are blocked by ${currentChatPartner.displayName || 'this user'}.`; unblockUserFromChatBtn.style.display = 'none'; } else { inputArea.style.display = 'flex'; blockedChatOverlay.style.display = 'none'; } }
+        if(unblockUserFromChatBtn) unblockUserFromChatBtn.addEventListener('click', () => { if (currentChatPartner) toggleBlockUser(currentChatPartner.uid, currentChatPartner.displayName); });
+
+        // --- Admin Panel Logic ---
+        function updateAdminPanelAccessUI() { const settingsList = document.querySelector('#profile-settings-view .settings-list'); let adminSettingsItem = document.getElementById('setting-admin-panel'); if (settingsList) { if (isAdminUser) { if (!adminSettingsItem) { adminSettingsItem = document.createElement('div'); adminSettingsItem.classList.add('settings-item'); adminSettingsItem.id = 'setting-admin-panel'; adminSettingsItem.innerHTML = `<i class="item-icon fas fa-shield-alt" style="color: var(--highlight-color);"></i><span class="item-label" style="color: var(--highlight-color); font-weight: bold;">Admin Panel</span><span class="item-value"></span><i class="item-arrow fas fa-chevron-right"></i>`; adminSettingsItem.addEventListener('click', () => { showView('admin-panel-view'); updateBottomNavActiveState(null); }); const logoutItem = document.getElementById('setting-logout'); if (logoutItem) settingsList.insertBefore(adminSettingsItem, logoutItem); else settingsList.appendChild(adminSettingsItem); } adminSettingsItem.style.display = 'flex'; } else { if (adminSettingsItem) adminSettingsItem.style.display = 'none'; } } }
+        if (adminPanelBackBtn) { adminPanelBackBtn.addEventListener('click', () => { loadProfileForSettingsScreen(); updateBottomNavActiveState('profile-settings-view'); });}
+        const adminPanelViewObserver = new MutationObserver((mutationsList) => { for(const mutation of mutationsList) { if (mutation.type === 'attributes' && mutation.attributeName === 'class') { if (adminPanelView && adminPanelView.classList.contains('active')) { console.log("Admin panel view became active. isAdminUser:", isAdminUser); if (isAdminUser) { loadAdminUsers(); if(adminNotificationStatusDiv) adminNotificationStatusDiv.textContent = ''; if(adminNotificationMessageInput) adminNotificationMessageInput.value = ''; if(adminUserSearchInput) adminUserSearchInput.value = ''; } else { if(adminUserListDiv) adminUserListDiv.innerHTML = '<p class="list-placeholder status-error">Admin access required.</p>'; } } } } });
+        if (adminPanelView) adminPanelViewObserver.observe(adminPanelView, { attributes: true });
+
+        async function loadAdminUsers() { /* ... same as previous ... */ if (!adminUserListDiv) { console.error("Admin user list div not found"); return; } if (!(currentUser && currentUser.email === ADMIN_EMAIL)) { console.warn("loadAdminUsers called, but user is not admin or currentUser not fully loaded. CurrentUser Email:", currentUser ? currentUser.email : "N/A"); adminUserListDiv.innerHTML = '<p class="list-placeholder status-error">Admin access required or user data not ready.</p>'; return; } console.log("Admin verified, proceeding to load users for admin panel."); adminUserListDiv.innerHTML = '<p class="list-placeholder">Loading users...</p>'; try { const usersRef = dbRef(database, 'users'); const usersSnapshot = await get(usersRef); allUsersForAdmin = []; if (usersSnapshot.exists()) { console.log("Admin: Users snapshot received from Firebase."); usersSnapshot.forEach(userSnap => { if (userSnap.key !== currentUser.uid) { allUsersForAdmin.push({ uid: userSnap.key, ...userSnap.val() }); } }); console.log(`Admin: Processed ${allUsersForAdmin.length} users for panel.`); } else { console.log("Admin: No users found in Firebase '/users' node (or only admin user exists)."); } renderAdminUserList(allUsersForAdmin); } catch (error) { console.error("Error loading users for admin panel:", error); adminUserListDiv.innerHTML = `<p class="list-placeholder status-error">Failed to load users. Error: ${error.message}. Check console and Firebase Rules.</p>`; } }
+
+        function renderAdminUserList(usersToRender) {
+            if (!adminUserListDiv) return;
+            adminUserListDiv.innerHTML = '';
+            if (usersToRender.length === 0) {
+                adminUserListDiv.innerHTML = '<p class="list-placeholder">No other users found.</p>';
+                return;
             }
+            usersToRender.forEach(user => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('admin-user-item');
+                const userDisplayName = user.displayName || 'N/A';
+                const userEmail = user.email || 'N/A';
+                const userAvatar = user.avatarEmoji || '';
+                const userPublicID = user.publicUserID || 'N/A';
+                let userJoined = 'N/A';
+                if (user.createdAt) {
+                    const date = new Date(user.createdAt);
+                    userJoined = `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                }
+
+                itemDiv.innerHTML = `
+                    <div class="admin-user-info">
+                        <p><strong>Name:</strong> ${userDisplayName} ${userAvatar}</p>
+                        <p><strong>Email:</strong> ${userEmail}</p>
+                        <p><strong>UID:</strong> ${user.uid}</p>
+                        <p><strong>PublicID:</strong> ${userPublicID}</p>
+                        <p><strong>Joined:</strong> ${userJoined}</p>
+                        <p><strong>Status:</strong> ${user.isBanned ? '<span style="color:var(--danger-color); font-weight:bold;">Banned</span>' : '<span style="color:var(--success-color);">Active</span>'}</p>
+                    </div>
+                    <div class="admin-user-actions">
+                        <button class="edit-user-btn" data-uid="${user.uid}"><i class="fas fa-edit"></i> Edit</button>
+                        ${user.isBanned ?
+                            `<button class="unban-btn" data-uid="${user.uid}" data-name="${userDisplayName}"><i class="fas fa-user-check"></i> Unban</button>` :
+                            `<button class="ban-btn" data-uid="${user.uid}" data-name="${userDisplayName}"><i class="fas fa-user-slash"></i> Ban</button>`
+                        }
+                    </div>
+                `;
+                adminUserListDiv.appendChild(itemDiv);
+            });
+
+            adminUserListDiv.querySelectorAll('.ban-btn, .unban-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const targetButton = e.currentTarget; // Use currentTarget for delegated events
+                    const targetUid = targetButton.dataset.uid;
+                    const targetName = targetButton.dataset.name;
+                    const isBanning = targetButton.classList.contains('ban-btn');
+                    handleAdminBanUser(targetUid, targetName, isBanning);
+                });
+            });
+            adminUserListDiv.querySelectorAll('.edit-user-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const targetUid = e.currentTarget.dataset.uid;
+                    const userToEdit = allUsersForAdmin.find(u => u.uid === targetUid);
+                    if (userToEdit) {
+                        openAdminEditUserModal(userToEdit);
+                    } else {
+                        alert("Could not find user data to edit.");
+                    }
+                });
+            });
+        }
+
+        if (adminUserSearchInput) { /* ... same as previous ... */ adminUserSearchInput.addEventListener('input', () => { const searchTerm = adminUserSearchInput.value.toLowerCase(); if (!allUsersForAdmin || allUsersForAdmin.length === 0) { renderAdminUserList(allUsersForAdmin); return; } if (!searchTerm) { renderAdminUserList(allUsersForAdmin); return; } const filteredUsers = allUsersForAdmin.filter(user => (user.displayName && user.displayName.toLowerCase().includes(searchTerm)) || (user.email && user.email.toLowerCase().includes(searchTerm)) || (user.uid && user.uid.toLowerCase().includes(searchTerm)) || (user.publicUserID && user.publicUserID.toLowerCase().includes(searchTerm)) ); renderAdminUserList(filteredUsers); }); }
+        async function handleAdminBanUser(uid, name, banAction) { /* ... same as previous ... */ if (!isAdminUser) { console.warn("Attempted ban/unban by non-admin."); return; } const actionText = banAction ? 'ban' : 'unban'; if (confirm(`Are you sure you want to ${actionText} "${name || uid}"?`)) { showLoader(); try { const userBanRef = dbRef(database, `users/${uid}/isBanned`); await set(userBanRef, banAction); const userInCache = allUsersForAdmin.find(u => u.uid === uid); if (userInCache) userInCache.isBanned = banAction; if (allUsersCache[uid]) allUsersCache[uid].isBanned = banAction; const currentSearchTerm = adminUserSearchInput.value.toLowerCase(); if (currentSearchTerm) { const filtered = allUsersForAdmin.filter(user => (user.displayName && user.displayName.toLowerCase().includes(currentSearchTerm)) || (user.email && user.email.toLowerCase().includes(currentSearchTerm)) || (user.uid && user.uid.toLowerCase().includes(currentSearchTerm)) || (user.publicUserID && user.publicUserID.toLowerCase().includes(currentSearchTerm)) ); renderAdminUserList(filtered); } else { renderAdminUserList(allUsersForAdmin); } alert(`User "${name || uid}" has been ${actionText}ned.`); } catch (error) { console.error(`Error ${actionText}ning user:`, error); alert(`Failed to ${actionText} user. Error: ${error.message}`); } finally { hideLoader(); } } }
+
+        // --- Admin Edit User Modal Logic ---
+        function openAdminEditUserModal(user) {
+            if (!adminEditUserModalOverlay || !user) return;
+            userToEditByAdmin = user; // Store the user object
+
+            adminEditUserModalTitle.textContent = `Edit User: ${user.displayName || user.uid.substring(0,8)}`;
+            adminEditUserUidInput.value = user.uid;
+            adminEditDisplayNameInput.value = user.displayName || '';
+            adminEditEmailInput.value = user.email || ''; // Display only
+            adminEditPublicIdInput.value = user.publicUserID || '';
+            adminEditAvatarEmojiInput.value = user.avatarEmoji || '';
+            adminEditLocationInput.value = user.location || '';
+            adminEditTimezoneInput.value = user.settings?.timezone || '';
+            adminEditLanguageInput.value = user.settings?.language || '';
+
+            adminEditUserModalStatus.textContent = '';
+            adminEditUserModalOverlay.classList.add('visible');
+        }
+
+        function closeAdminEditUserModal() {
+            if(adminEditUserModalOverlay) adminEditUserModalOverlay.classList.remove('visible');
+            userToEditByAdmin = null; // Clear stored user
+        }
+
+        if(adminEditUserCancelBtn) adminEditUserCancelBtn.addEventListener('click', closeAdminEditUserModal);
+        if(adminEditUserModalOverlay) adminEditUserModalOverlay.addEventListener('click', (e) => {
+            if (e.target === adminEditUserModalOverlay) closeAdminEditUserModal();
         });
 
-        // Popup ke Copy Button pe click listener
-        copyLinkButton.addEventListener('click', () => {
-            const linkToCopy = shareLinkDisplay.textContent;
-            clearTimeout(copyTimeout); // Purana timeout clear karo agar hai toh
+        if(adminEditUserSaveBtn) adminEditUserSaveBtn.addEventListener('click', async () => {
+            if (!isAdminUser || !userToEditByAdmin || !adminEditUserModalStatus) return;
 
-            if (!navigator.clipboard) {
-                console.warn('Clipboard API not available. Requires HTTPS or localhost.');
-                copyStatusMessage.textContent = 'Copy failed (HTTPS needed)';
-                copyStatusMessage.style.color = 'var(--danger-color)';
-                 copyTimeout = setTimeout(() => {
-                     copyStatusMessage.textContent = '';
-                 }, 3000);
+            const targetUid = userToEditByAdmin.uid;
+            const updates = {};
+            let changesMade = false;
+
+            const newDisplayName = adminEditDisplayNameInput.value.trim();
+            if (newDisplayName !== (userToEditByAdmin.displayName || '')) {
+                updates.displayName = newDisplayName;
+                changesMade = true;
+            }
+            const newPublicId = adminEditPublicIdInput.value.trim().toLowerCase();
+             if (newPublicId && newPublicId.length < 5 && newPublicId !== (userToEditByAdmin.publicUserID || '')) {
+                adminEditUserModalStatus.textContent = 'Public UserID must be at least 5 characters.';
+                adminEditUserModalStatus.style.color = 'var(--danger-color)';
+                return;
+            }
+            if (newPublicId !== (userToEditByAdmin.publicUserID || '')) {
+                updates.publicUserID = newPublicId;
+                changesMade = true;
+            }
+            const newAvatarEmoji = adminEditAvatarEmojiInput.value.trim();
+            if (newAvatarEmoji !== (userToEditByAdmin.avatarEmoji || '')) {
+                updates.avatarEmoji = newAvatarEmoji;
+                changesMade = true;
+            }
+            const newLocation = adminEditLocationInput.value.trim();
+            if (newLocation !== (userToEditByAdmin.location || '')) {
+                updates.location = newLocation;
+                changesMade = true;
+            }
+            const newTimezone = adminEditTimezoneInput.value.trim();
+            if (newTimezone !== (userToEditByAdmin.settings?.timezone || '')) {
+                updates['settings/timezone'] = newTimezone; // Path for nested update
+                changesMade = true;
+            }
+            const newLanguage = adminEditLanguageInput.value.trim();
+            if (newLanguage !== (userToEditByAdmin.settings?.language || '')) {
+                updates['settings/language'] = newLanguage; // Path for nested update
+                changesMade = true;
+            }
+
+            if (!changesMade) {
+                adminEditUserModalStatus.textContent = 'No changes detected.';
+                adminEditUserModalStatus.style.color = 'var(--secondary-text-color)';
+                setTimeout(closeAdminEditUserModal, 1500);
                 return;
             }
 
-            navigator.clipboard.writeText(linkToCopy).then(() => {
-                console.log('Link copied to clipboard:', linkToCopy);
-                copyStatusMessage.textContent = 'Link Copied!';
-                copyStatusMessage.style.color = 'var(--success-color)';
-                copyLinkButton.innerHTML = '<i class="fas fa-check"></i> Copied!'; // Change button text
+            adminEditUserModalStatus.textContent = 'Saving changes...';
+            adminEditUserModalStatus.style.color = 'var(--secondary-text-color)';
+            showLoader();
 
-                // Thodi der baad message aur button text ko reset karo
-                 copyTimeout = setTimeout(() => {
-                    copyStatusMessage.textContent = '';
-                    copyLinkButton.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
-                 }, 2500); // 2.5 seconds
+            try {
+                const userDbRef = dbRef(database, `users/${targetUid}`);
+                await update(userDbRef, updates);
 
-            }).catch(err => {
-                console.error('Failed to copy link: ', err);
-                copyStatusMessage.textContent = 'Copy Failed!';
-                copyStatusMessage.style.color = 'var(--danger-color)';
-                 copyTimeout = setTimeout(() => {
-                     copyStatusMessage.textContent = '';
-                 }, 3000);
-            });
+                // Update local cache for admin panel
+                const userInAdminList = allUsersForAdmin.find(u => u.uid === targetUid);
+                if (userInAdminList) {
+                    if(updates.displayName) userInAdminList.displayName = updates.displayName;
+                    if(updates.publicUserID) userInAdminList.publicUserID = updates.publicUserID;
+                    if(updates.avatarEmoji) userInAdminList.avatarEmoji = updates.avatarEmoji;
+                    if(updates.location) userInAdminList.location = updates.location;
+                    if(updates['settings/timezone']) {
+                        if(!userInAdminList.settings) userInAdminList.settings = {};
+                        userInAdminList.settings.timezone = updates['settings/timezone'];
+                    }
+                    if(updates['settings/language']) {
+                         if(!userInAdminList.settings) userInAdminList.settings = {};
+                        userInAdminList.settings.language = updates['settings/language'];
+                    }
+                }
+                 // Update general user cache if user is there
+                if (allUsersCache[targetUid]) {
+                     Object.assign(allUsersCache[targetUid], updates); // Simple merge, good enough for display
+                     if(updates['settings/timezone']){ if(!allUsersCache[targetUid].settings) allUsersCache[targetUid].settings = {}; allUsersCache[targetUid].settings.timezone = updates['settings/timezone']; }
+                     if(updates['settings/language']){ if(!allUsersCache[targetUid].settings) allUsersCache[targetUid].settings = {}; allUsersCache[targetUid].settings.language = updates['settings/language']; }
+                }
+
+                adminEditUserModalStatus.textContent = 'Changes saved successfully!';
+                adminEditUserModalStatus.style.color = 'var(--success-color)';
+                renderAdminUserList(allUsersForAdmin); // Refresh the list
+                setTimeout(closeAdminEditUserModal, 1500);
+
+            } catch (error) {
+                console.error("Error updating user by admin:", error);
+                adminEditUserModalStatus.textContent = `Error: ${error.message}`;
+                adminEditUserModalStatus.style.color = 'var(--danger-color)';
+            } finally {
+                hideLoader();
+            }
         });
 
-        // --- *** END: Share Popup Logic *** ---
 
-
-        // --- Initial Call (Same as before) ---
-        renderAuthUI();
+        // Global Notification Sending/Receiving (Unchanged)
+        if (adminSendNotificationBtn) { adminSendNotificationBtn.addEventListener('click', async () => { if (!isAdminUser || !adminNotificationMessageInput || !adminNotificationStatusDiv) return; const message = adminNotificationMessageInput.value.trim(); if (!message) { adminNotificationStatusDiv.textContent = 'Please enter a notification message.'; adminNotificationStatusDiv.style.color = 'var(--danger-color)'; return; } adminNotificationStatusDiv.textContent = 'Sending notification...'; adminNotificationStatusDiv.style.color = 'var(--secondary-text-color)'; showLoader(); try { const notificationsRef = dbRef(database, 'global_notifications'); const newNotificationRef = push(notificationsRef); await set(newNotificationRef, { message: message, timestamp: serverTimestamp(), senderName: currentUser.displayName || "Admin" }); adminNotificationMessageInput.value = ''; adminNotificationStatusDiv.textContent = 'Notification sent successfully!'; adminNotificationStatusDiv.style.color = 'var(--success-color)'; } catch (error) { console.error("Error sending global notification:", error); adminNotificationStatusDiv.textContent = 'Failed to send notification. Check Firebase Rules.'; adminNotificationStatusDiv.style.color = 'var(--danger-color)'; } finally { hideLoader(); setTimeout(() => { if (adminNotificationStatusDiv) adminNotificationStatusDiv.textContent = ''; }, 3000); } }); }
+        function attachGlobalNotificationListener() { if (globalNotificationListenerUnsubscribe) { off(dbRef(database, 'global_notifications'), 'value', globalNotificationListenerUnsubscribe); globalNotificationListenerUnsubscribe = null; } const notificationsQuery = query(dbRef(database, 'global_notifications'), orderByChild('timestamp')); let initialDataLoaded = false; let lastSeenTimestamp = localStorage.getItem(LAST_SEEN_NOTIFICATION_KEY) || 0; lastSeenTimestamp = parseInt(lastSeenTimestamp, 10); globalNotificationListenerUnsubscribe = onValue(notificationsQuery, (snapshot) => { if (!snapshot.exists()) return; let newNotificationsFound = false; let latestTimestampInBatch = lastSeenTimestamp; snapshot.forEach(childSnapshot => { const notification = childSnapshot.val(); const notificationId = childSnapshot.key; if (notification.timestamp > lastSeenTimestamp) { if (initialDataLoaded) { showGlobalNotificationToast(notification, notificationId); } if (notification.timestamp > latestTimestampInBatch) { latestTimestampInBatch = notification.timestamp; } newNotificationsFound = true; } else if (!initialDataLoaded && notification.timestamp > latestTimestampInBatch) { latestTimestampInBatch = notification.timestamp; } }); if (newNotificationsFound || !initialDataLoaded) { localStorage.setItem(LAST_SEEN_NOTIFICATION_KEY, latestTimestampInBatch.toString()); } initialDataLoaded = true; }, { onlyOnce: false }); }
+        function showGlobalNotificationToast(notification, notificationId) { console.log(`New Global Notification (ID: ${notificationId}): ${notification.message}`); const toast = document.createElement('div'); toast.style.cssText = `position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background-color:var(--highlight-color); color:white; padding:12px 20px; border-radius:8px; z-index:2000; box-shadow:0 3px 12px rgba(0,0,0,0.25); font-size:0.9em; max-width:90%; text-align:center; cursor:pointer;`; toast.innerHTML = `📢 <strong>${notification.senderName || 'Admin Update'}:</strong><br>${notification.message.substring(0,120)}${notification.message.length > 120 ? '...' : ''}`; toast.onclick = () => { alert(`Full Notification from ${notification.senderName || 'Admin'}:\n\n${notification.message}`); toast.remove(); }; document.body.appendChild(toast); setTimeout(() => { if (toast.parentElement) toast.remove(); }, 7000); }
 
     </script>
 </body>
